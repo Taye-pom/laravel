@@ -140,7 +140,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-warning px-4 fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#home"><img src="project/logo.png" alt="Yachad Logo">Yachad</a>
+            <a class="navbar-brand fw-bold" href="#home"><img src="{{ asset('project/logo.png') }}" alt="Yachad Logo">Yachad</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navLinks" aria-controls="navLinks" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -290,7 +290,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 text-center">
-                    <img src="project/twoP.jpg" alt="Teamwork illustration" class="img-fluid hero-img">
+                    <img src="{{ asset('project/twoP.jpg') }}" alt="Teamwork illustration" class="img-fluid hero-img">
                 </div>
             </div>
         </div>
