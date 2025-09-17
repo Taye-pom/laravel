@@ -188,7 +188,7 @@
                             <label for="loginPassword" class="form-label">Password</label>
                             <input type="password" class="form-control" id="loginPassword" name="password" required>
                         </div>
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="userType" class="form-label">User Type</label>
                             <select class="form-select" id="userType" name="userType" required>
                                 <option value="" disabled selected>Select user type</option>
@@ -196,7 +196,7 @@
                                 <option value="project_manager">Project Manager</option>
                                 <option value="admin">Admin</option>
                             </select>
-                        </div>
+                        </div> --}}
                         <button type="submit" class="btn btn-warning w-100">Login</button>
                     </form>
                     <div class="mt-3 text-center">

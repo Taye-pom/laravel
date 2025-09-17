@@ -6,6 +6,7 @@
     <title>DevCollab Admin Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="project/logo.png" type="image/x-icon">
     <style>
         :root {
             --primary-yellow: #ffc107;
@@ -1161,6 +1162,7 @@
                             <h3 class="content-card-title">General Settings</h3>
                         </div>
                         <form id="generalSettingsForm">
+                            @csrf
                             <div class="mb-3">
                                 <label class="form-label">Platform Name</label>
                                 <input type="text" class="form-control" value="DevCollab" id="platformName">
@@ -1195,6 +1197,7 @@
                             <h3 class="content-card-title">Security Settings</h3>
                         </div>
                         <form id="securitySettingsForm">
+                            @csrf
                             <div class="mb-3">
                                 <label class="form-label">Session Timeout (minutes)</label>
                                 <input type="number" class="form-control" value="30" id="sessionTimeout">
@@ -1373,6 +1376,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="createProjectForm">
+                        @csrf
                         <div class="mb-3">
                             <label class="form-label">Project Name</label>
                             <input type="text" class="form-control" id="projectName" required>
@@ -1501,6 +1505,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="editUserForm">
+                        @csrf
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
