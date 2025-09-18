@@ -15,6 +15,8 @@
         .navbar {
             transition: all 0.3s ease-in-out;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            height: 56px;
+            overflow: hidden;
         }
         .nav-link {
             font-weight: 500;
@@ -22,12 +24,17 @@
             transition: all 0.3s ease-in-out;
         }
         .nav-link:hover {
-            color: #ffc107 !important;
+            color: #0b07ff !important;
             transform: scale(1.1);
         }
+        
         .navbar-brand img {
-            width: 30px;
-            margin-right: 10px;
+            /* width: 30px;
+            margin-right: 10px; */
+            height: 80px;
+            width: auto;
+            /* margin-right: 10px; */
+            /* max-height: 50px; */
         }
         #home {
             height: 100vh;
@@ -140,7 +147,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-warning px-4 fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#home"><img src="{{ asset('project/logo.png') }}" alt="Yachad Logo">Yachad</a>
+            <a class="navbar-brand fw-bold" href="#home"><img src="{{ asset('project/origin.png') }}" alt="Yachad Logo">Yachad</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navLinks" aria-controls="navLinks" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -285,7 +292,7 @@
                     <h1 class="fw-bold mb-3 animate__animated animate__fadeIn">Collaborate, Build & Deliver Better with Yachad</h1>
                     <p class="lead mb-4">A modern task management platform for software teams to collaborate efficiently — faster, simpler, and more powerful than ever.</p>
                     <div class="mt-4">
-                        <a href="#" class強="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal">Start for Free</a>
+                        <a href="#" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#signupModal">Start for Free</a>
                         <a href="#" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
                     </div>
                 </div>

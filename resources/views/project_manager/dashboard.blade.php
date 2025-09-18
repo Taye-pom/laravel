@@ -1,256 +1,4 @@
-<!-- Rate Team Member Modal -->
-    <div class="modal fade" id="rateTeamMemberModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Rate Team Member</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="text-center mb-4">
-                        <img src="https://via.placeholder.com/80x80" class="rounded-circle mb-3" alt="User" id="rateUserImage">
-                        <h5 id="rateUserName">Team Member Name</h5>
-                        <p class="text-muted" id="rateUserRole">Role</p>
-                    </div>
-                    
-                    <form id="rateTeamMemberForm">
-                        <input type="hidden" id="rateMemberId">
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Project Completed</label>
-                            <select class="form-select" id="rateProject" required>
-                                <option value="">Select Project</option>
-                                <option value="1">E-commerce Platform</option>
-                                <option value="2">Mobile App</option>
-                                <option value="3">API Integration</option>
-                            </select>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label class="form-label">Overall Rating</label>
-                            <div class="rating-stars text-center">
-                                <i class="fas fa-star rating-star" data-rating="1"></i>
-                                <i class="fas fa-star rating-star" data-rating="2"></i>
-                                <i class="fas fa-star rating-star" data-rating="3"></i>
-                                <i class="fas fa-star rating-star" data-rating="4"></i>
-                                <i class="fas fa-star rating-star" data-rating="5"></i>
-                            </div>
-                            <input type="hidden" id="selectedRating" value="5">
-                            <small class="text-muted d-block text-center mt-2" id="ratingText">Excellent (5/5)</small>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Code Quality (1-5)</label>
-                                <select class="form-select" id="codeQuality">
-                                    <option value="5">5 - Excellent</option>
-                                    <option value="4">4 - Very Good</option>
-                                    <option value="3">3 - Good</option>
-                                    <option value="2">2 - Fair</option>
-                                    <option value="1">1 - Poor</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Communication (1-5)</label>
-                                <select class="form-select" id="communication">
-                                    <option value="5">5 - Excellent</option>
-                                    <option value="4">4 - Very Good</option>
-                                    <option value="3">3 - Good</option>
-                                    <option value="2">2 - Fair</option>
-                                    <option value="1">1 - Poor</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Punctuality (1-5)</label>
-                                <select class="form-select" id="punctuality">
-                                    <option value="5">5 - Always On Time</option>
-                                    <option value="4">4 - Usually On Time</option>
-                                    <option value="3">3 - Sometimes Late</option>
-                                    <option value="2">2 - Often Late</option>
-                                    <option value="1">1 - Always Late</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Problem Solving (1-5)</label>
-                                <select class="form-select" id="problemSolving">
-                                    <option value="5">5 - Excellent</option>
-                                    <option value="4">4 - Very Good</option>
-                                    <option value="3">3 - Good</option>
-                                    <option value="2">2 - Fair</option>
-                                    <option value="1">1 - Poor</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Comments & Feedback</label>
-                            <textarea class="form-control" rows="4" id="ratingComments" placeholder="Share specific feedback about this developer's performance..."></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="recommendForFuture">
-                                <label class="form-check-label" for="recommendForFuture">
-                                    I would recommend this developer for future projects
-                                </label>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-yellow" onclick="submitRating()">Submit Rating</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- View Team Member Details Modal -->
-    <div class="modal fade" id="viewTeamMemberModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Team Member Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-4 text-center">
-                            <img src="https://via.placeholder.com/120x120" class="rounded-circle mb-3" alt="User" id="viewUserImage">
-                            <h5 id="viewUserName">Team Member Name</h5>
-                            <p class="text-muted" id="viewUserRole">Role</p>
-                            <div class="mb-3">
-                                <div class="stars-rating mb-1" id="viewUserRating">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star-half-alt text-warning"></i>
-                                </div>
-                                <small class="text-muted" id="viewUserRatingText">4.5 out of 5 (4 ratings)</small>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="row mb-3">
-                                <div class="col-sm-6">
-                                    <strong>Email:</strong>
-                                    <div id="viewUserEmail">email@company.com</div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <strong>Status:</strong>
-                                    <div><span class="badge bg-success" id="viewUserStatus">Active</span></div>
-                                </div>
-                            </div>
-                            
-                            <div class="row mb-3">
-                                <div class="col-sm-6">
-                                    <strong>Active Projects:</strong>
-                                    <div id="viewUserProjects">3</div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <strong>Total Tasks:</strong>
-                                    <div id="viewUserTasks">8</div>
-                                </div>
-                            </div>
-                            
-                            <h6 class="mb-3">Performance Breakdown</h6>
-                            <div class="mb-2">
-                                <div class="d-flex justify-content-between">
-                                    <small>Code Quality</small>
-                                    <small><strong>4.6/5</strong></small>
-                                </div>
-                                <div class="progress progress-modern">
-                                    <div class="progress-bar progress-bar-yellow" style="width: 92%"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-2">
-                                <div class="d-flex justify-content-between">
-                                    <small>Communication</small>
-                                    <small><strong>4.8/5</strong></small>
-                                </div>
-                                <div class="progress progress-modern">
-                                    <div class="progress-bar progress-bar-yellow" style="width: 96%"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-2">
-                                <div class="d-flex justify-content-between">
-                                    <small>Punctuality</small>
-                                    <small><strong>4.3/5</strong></small>
-                                </div>
-                                <div class="progress progress-modern">
-                                    <div class="progress-bar progress-bar-yellow" style="width: 86%"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <div class="d-flex justify-content-between">
-                                    <small>Problem Solving</small>
-                                    <small><strong>4.7/5</strong></small>
-                                </div>
-                                <div class="progress progress-modern">
-                                    <div class="progress-bar progress-bar-yellow" style="width: 94%"></div>
-                                </div>
-                            </div>
-                            
-                            <h6 class="mb-2">Recent Project Ratings</h6>
-                            <div class="recent-ratings">
-                                <div class="d-flex justify-content-between align-items-center p-2 border rounded mb-2">
-                                    <div>
-                                        <small class="fw-bold">E-commerce Platform</small>
-                                        <div class="text-muted small">Frontend Development</div>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="stars-rating">
-                                            <i class="fas fa-star text-warning small"></i>
-                                            <i class="fas fa-star text-warning small"></i>
-                                            <i class="fas fa-star text-warning small"></i>
-                                            <i class="fas fa-star text-warning small"></i>
-                                            <i class="fas fa-star text-warning small"></i>
-                                        </div>
-                                        <small class="text-muted">4.6</small>
-                                    </div>
-                                </div>
-                                
-                                <div class="d-flex justify-content-between align-items-center p-2 border rounded mb-2">
-                                    <div>
-                                        <small class="fw-bold">Mobile App</small>
-                                        <div class="text-muted small">UI Components</div>
-                                    </div>
-                                    <div class="text-end">
-                                        <div class="stars-rating">
-                                            <i class="fas fa-star text-warning small"></i>
-                                            <i class="fas fa-star text-warning small"></i>
-                                            <i class="fas fa-star text-warning small"></i>
-                                            <i class="fas fa-star text-warning small"></i>
-                                            <i class="far fa-star text-warning small"></i>
-                                        </div>
-                                        <small class="text-muted">4.2</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <h6>Latest Feedback Comments</h6>
-                        <div class="bg-light p-3 rounded">
-                            <p class="mb-2"><strong>From E-commerce Platform:</strong></p>
-                            <p class="small text-muted mb-0">"Excellent work on the frontend components. Clean code, responsive design, and delivered ahead of schedule. Great communication throughout the project."</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-yellow" onclick="rateTeamMember(document.getElementById('viewUserId').value)">Rate Performance</button>
-                </div>
-            </div>
-        </div>
-    </div><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -259,7 +7,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-    <link rel="shortcut icon" href="project/logo.png" type="image/x-icon">
     <style>
         :root {
             --primary-yellow: #ffc107;
@@ -2052,6 +1799,270 @@
             </div>
         </div>
     </div>
+
+    <!-- Rate Team Member Modal -->
+    <div class="modal fade" id="rateTeamMemberModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Rate Team Member</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <img src="https://via.placeholder.com/80x80" class="rounded-circle mb-3" alt="User" id="rateUserImage">
+                        <h5 id="rateUserName">Team Member Name</h5>
+                        <p class="text-muted" id="rateUserRole">Role</p>
+                    </div>
+                    
+                    <form id="rateTeamMemberForm">
+                        <input type="hidden" id="rateMemberId">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Project Completed</label>
+                            <select class="form-select" id="rateProject" required>
+                                <option value="">Select Project</option>
+                                <option value="1">E-commerce Platform</option>
+                                <option value="2">Mobile App</option>
+                                <option value="3">API Integration</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Overall Rating</label>
+                            <div class="rating-stars text-center">
+                                <i class="fas fa-star rating-star" data-rating="1"></i>
+                                <i class="fas fa-star rating-star" data-rating="2"></i>
+                                <i class="fas fa-star rating-star" data-rating="3"></i>
+                                <i class="fas fa-star rating-star" data-rating="4"></i>
+                                <i class="fas fa-star rating-star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" id="selectedRating" value="5">
+                            <small class="text-muted d-block text-center mt-2" id="ratingText">Excellent (5/5)</small>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Code Quality (1-5)</label>
+                                <select class="form-select" id="codeQuality">
+                                    <option value="5">5 - Excellent</option>
+                                    <option value="4">4 - Very Good</option>
+                                    <option value="3">3 - Good</option>
+                                    <option value="2">2 - Fair</option>
+                                    <option value="1">1 - Poor</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Communication (1-5)</label>
+                                <select class="form-select" id="communication">
+                                    <option value="5">5 - Excellent</option>
+                                    <option value="4">4 - Very Good</option>
+                                    <option value="3">3 - Good</option>
+                                    <option value="2">2 - Fair</option>
+                                    <option value="1">1 - Poor</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Punctuality (1-5)</label>
+                                <select class="form-select" id="punctuality">
+                                    <option value="5">5 - Always On Time</option>
+                                    <option value="4">4 - Usually On Time</option>
+                                    <option value="3">3 - Sometimes Late</option>
+                                    <option value="2">2 - Often Late</option>
+                                    <option value="1">1 - Always Late</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Problem Solving (1-5)</label>
+                                <select class="form-select" id="problemSolving">
+                                    <option value="5">5 - Excellent</option>
+                                    <option value="4">4 - Very Good</option>
+                                    <option value="3">3 - Good</option>
+                                    <option value="2">2 - Fair</option>
+                                    <option value="1">1 - Poor</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Comments & Feedback</label>
+                            <textarea class="form-control" rows="4" id="ratingComments" placeholder="Share specific feedback about this developer's performance..."></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="recommendForFuture">
+                                <label class="form-check-label" for="recommendForFuture">
+                                    I would recommend this developer for future projects
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-yellow" onclick="submitRating()">Submit Rating</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Team Member Details Modal -->
+    <div class="modal fade" id="viewTeamMemberModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Team Member Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <img src="https://via.placeholder.com/120x120" class="rounded-circle mb-3" alt="User" id="viewUserImage">
+                            <h5 id="viewUserName">Team Member Name</h5>
+                            <p class="text-muted" id="viewUserRole">Role</p>
+                            <div class="mb-3">
+                                <div class="stars-rating mb-1" id="viewUserRating">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                </div>
+                                <small class="text-muted" id="viewUserRatingText">4.5 out of 5 (4 ratings)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row mb-3">
+                                <div class="col-sm-6">
+                                    <strong>Email:</strong>
+                                    <div id="viewUserEmail">email@company.com</div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <strong>Status:</strong>
+                                    <div><span class="badge bg-success" id="viewUserStatus">Active</span></div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-sm-6">
+                                    <strong>Active Projects:</strong>
+                                    <div id="viewUserProjects">3</div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <strong>Total Tasks:</strong>
+                                    <div id="viewUserTasks">8</div>
+                                </div>
+                            </div>
+                            
+                            <h6 class="mb-3">Performance Breakdown</h6>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>Code Quality</small>
+                                    <small><strong>4.6/5</strong></small>
+                                </div>
+                                <div class="progress progress-modern">
+                                    <div class="progress-bar progress-bar-yellow" style="width: 92%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>Communication</small>
+                                    <small><strong>4.8/5</strong></small>
+                                </div>
+                                <div class="progress progress-modern">
+                                    <div class="progress-bar progress-bar-yellow" style="width: 96%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>Punctuality</small>
+                                    <small><strong>4.3/5</strong></small>
+                                </div>
+                                <div class="progress progress-modern">
+                                    <div class="progress-bar progress-bar-yellow" style="width: 86%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <small>Problem Solving</small>
+                                    <small><strong>4.7/5</strong></small>
+                                </div>
+                                <div class="progress progress-modern">
+                                    <div class="progress-bar progress-bar-yellow" style="width: 94%"></div>
+                                </div>
+                            </div>
+                            
+                            <h6 class="mb-2">Recent Project Ratings</h6>
+                            <div class="recent-ratings">
+                                <div class="d-flex justify-content-between align-items-center p-2 border rounded mb-2">
+                                    <div>
+                                        <small class="fw-bold">E-commerce Platform</small>
+                                        <div class="text-muted small">Frontend Development</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="stars-rating">
+                                            <i class="fas fa-star text-warning small"></i>
+                                            <i class="fas fa-star text-warning small"></i>
+                                            <i class="fas fa-star text-warning small"></i>
+                                            <i class="fas fa-star text-warning small"></i>
+                                            <i class="fas fa-star text-warning small"></i>
+                                        </div>
+                                        <small class="text-muted">4.6</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center p-2 border rounded mb-2">
+                                    <div>
+                                        <small class="fw-bold">Mobile App</small>
+                                        <div class="text-muted small">UI Components</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="stars-rating">
+                                            <i class="fas fa-star text-warning small"></i>
+                                            <i class="fas fa-star text-warning small"></i>
+                                            <i class="fas fa-star text-warning small"></i>
+                                            <i class="fas fa-star text-warning small"></i>
+                                            <i class="far fa-star text-warning small"></i>
+                                        </div>
+                                        <small class="text-muted">4.2</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6>Latest Feedback Comments</h6>
+                        <div class="bg-light p-3 rounded">
+                            <p class="mb-2"><strong>From E-commerce Platform:</strong></p>
+                            <p class="small text-muted mb-0">"Excellent work on the frontend components. Clean code, responsive design, and delivered ahead of schedule. Great communication throughout the project."</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-yellow" onclick="rateTeamMember(document.getElementById('viewUserId').value)">Rate Performance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- <!-- Notification Toast -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="notificationToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">
+                    <!-- Message will be injected here -->
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div> --}}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
