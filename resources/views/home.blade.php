@@ -185,7 +185,16 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="loginForm" action="{{route('login')}}" method="POST">
+                    @if ($errors->login->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->login->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    <form id="loginForm" action="{{ route('login.post') }}" method="POST">
                         @csrf
                         <div class="mb-3">
                             <label for="loginEmail" class="form-label">Email address</label>
@@ -252,7 +261,21 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="signupForm" action="{{route('signup')}}" method="POST">
+                    @if (session('auth_success'))
+                        <div class="alert alert-success">
+                            {{ session('auth_success') }}
+                        </div>
+                    @endif
+                    @if ($errors->register->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->register->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    <form id="signupForm" action="{{ route('signup.post') }}" method="POST">
                         @csrf
                         <div class="mb-3">
                             <label for="signupName" class="form-label">Full Name</label>
@@ -267,9 +290,14 @@
                             <input type="password" class="form-control" id="signupPassword" name="password" required>
                         </div>
                         <div class="mb-3">
+                            <label for="signupPasswordConfirmation" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="signupPasswordConfirmation" name="password_confirmation" required>
+                        </div>
+                        <div class="mb-3">
                             <label for="signupUserType" class="form-label">User Type</label>
-                            <select class="form-select" id="signupUserType" name="userType" required>
+                            <select class="form-select" id="signupUserType" name="role" required>
                                 <option value="" disabled selected>Select user type</option>
+                                <option value="user">User</option>
                                 <option value="developer">Developer</option>
                                 <option value="project_manager">Project Manager</option>
                                 <option value="admin">Admin</option>
@@ -445,35 +473,30 @@
             });
         });
 
-        // Form submission handling (placeholder for frontend demo)
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const userType = document.getElementById('userType').value;
-            alert(`Logging in as ${userType}! Redirecting to ${userType} dashboard...`);
-            // In a real app, this would send a request to the backend
-            window.location.href = `/dashboard/${userType}`;
+        // Laisser le formulaire de login poster réellement (pas d'interception JS)
+        // document.getElementById('loginForm').addEventListener('submit', function(e) {
+        //     e.preventDefault();
+        // });
+
+        // Rouvrir automatiquement la bonne modal selon erreurs/succès
+        document.addEventListener('DOMContentLoaded', function() {
+            const hasLoginErrors = {{ $errors->login->any() ? 'true' : 'false' }};
+            const hasRegisterErrors = {{ $errors->register->any() ? 'true' : 'false' }};
+            const hasRegisterSuccess = {{ session('auth_success') ? 'true' : 'false' }};
+
+            if (hasLoginErrors) {
+                const modal = new bootstrap.Modal(document.getElementById('loginModal'));
+                modal.show();
+            } else if (hasRegisterErrors || hasRegisterSuccess) {
+                const modal = new bootstrap.Modal(document.getElementById('signupModal'));
+                modal.show();
+            }
         });
 
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Sign up successful! Please log in.');
-            // Close signup modal and open login modal
-            const signupModal = bootstrap.Modal.getInstance(document.getElementById('signupModal'));
-            signupModal.hide();
-            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-            loginModal.show();
-        });
-
-        document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('forgotPasswordEmail').value;
-            alert(`Password reset link sent to ${email}!`);
-            // Close forgot password modal and open login modal
-            const forgotPasswordModal = bootstrap.Modal.getInstance(document.getElementById('forgotPasswordModal'));
-            forgotPasswordModal.hide();
-            const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-            loginModal.show();
-        });
+        // Laisser le reset password poster réellement (si implémenté)
+        // document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+        //     e.preventDefault();
+        // });
     </script>
 </body>
 </html>

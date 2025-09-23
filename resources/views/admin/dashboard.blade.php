@@ -549,6 +549,12 @@
     <div class="main-container">
         <!-- Dashboard Page -->
         <div id="dashboardPage" class="page-section active">
+            @if (session('status'))
+                <div class="alert alert-success">{{ session('status') }}</div>
+            @endif
+            @if ($errors->any())
+                <div class="alert alert-danger">{{ $errors->first() }}</div>
+            @endif
             <div class="dashboard-header">
                 <h1><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h1>
                 <p>Welcome back! Here's what's happening with your development platform today.</p>
@@ -557,7 +563,7 @@
             <div class="stats-grid">
                 <div class="stats-card">
                     <i class="fas fa-users stats-icon"></i>
-                    <div class="stats-number" id="totalUsers">156</div>
+                    <div class="stats-number" id="totalUsers">{{ $stats['totalUsers'] ?? 0 }}</div>
                     <div class="stats-label">Total Users</div>
                 </div>
                 <div class="stats-card">
@@ -567,7 +573,7 @@
                 </div>
                 <div class="stats-card">
                     <i class="fas fa-code stats-icon"></i>
-                    <div class="stats-number" id="totalDevelopers">89</div>
+                    <div class="stats-number" id="totalDevelopers">{{ $stats['totalDevelopers'] ?? 0 }}</div>
                     <div class="stats-label">Developers</div>
                 </div>
                 <div class="stats-card">
@@ -685,88 +691,58 @@
                             </tr>
                         </thead>
                         <tbody id="usersTableBody">
-                            <tr>
-                                <td>#001</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Avatar">
-                                        <strong>John Smith</strong>
-                                    </div>
-                                </td>
-                                <td>john.smith@email.com</td>
-                                <td><span class="badge bg-info">Developer</span></td>
-                                <td><span class="status-badge status-active">Active</span></td>
-                                <td>Jan 15, 2024</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn btn-view" onclick="viewUser(1)" title="View">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="action-btn btn-edit" onclick="editUser(1)" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="action-btn btn-delete" onclick="deleteUser(1)" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#002</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Avatar">
-                                        <strong>Sarah Johnson</strong>
-                                    </div>
-                                </td>
-                                <td>sarah.johnson@email.com</td>
-                                <td><span class="badge bg-primary">Project Manager</span></td>
-                                <td><span class="status-badge status-active">Active</span></td>
-                                <td>Feb 10, 2024</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn btn-view" onclick="viewUser(2)" title="View">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="action-btn btn-edit" onclick="editUser(2)" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="action-btn btn-delete" onclick="deleteUser(2)" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>#003</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Avatar">
-                                        <strong>Mike Wilson</strong>
-                                    </div>
-                                </td>
-                                <td>mike.wilson@email.com</td>
-                                <td><span class="badge bg-info">Developer</span></td>
-                                <td><span class="status-badge status-inactive">Inactive</span></td>
-                                <td>Mar 05, 2024</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button class="action-btn btn-view" onclick="viewUser(3)" title="View">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="action-btn btn-edit" onclick="editUser(3)" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="action-btn btn-delete" onclick="deleteUser(3)" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                            @forelse($users as $user)
+                                <tr>
+                                    <td>#{{ $user->id }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Avatar">
+                                            <strong>{{ $user->name }}</strong>
+                                        </div>
+                                    </td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>
+                                        <form action="{{ route('admin.users.role', $user) }}" method="POST" class="d-flex align-items-center gap-2">
+                                            @csrf
+                                            @method('PATCH')
+                                            <select name="role" class="form-select form-select-sm" onchange="this.form.submit()">
+                                                <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
+                                                <option value="developer" {{ $user->role === 'developer' ? 'selected' : '' }}>Developer</option>
+                                                <option value="project_manager" {{ $user->role === 'project_manager' ? 'selected' : '' }}>Project Manager</option>
+                                                <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
+                                            </select>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge status-active">Active</span>
+                                    </td>
+                                    <td>{{ optional($user->created_at)->format('M d, Y') }}</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Delete this user?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="action-btn btn-delete" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">No users found.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
+            @if(method_exists($users, 'links'))
+                <div class="mt-3">
+                    {{ $users->links() }}
+                </div>
+            @endif
         </div>
 
         <!-- Projects Page -->

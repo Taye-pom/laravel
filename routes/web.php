@@ -6,21 +6,25 @@ use App\Livewire\Settings\Appearance;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DeveloperController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminUserController;
 
 // Home page
 Route::get('/', function () {
     if (auth()->check()) {
-        return redirect()->route('dashboard.redirect');
+        return redirect()->route('dashboard');
     }
     return view('home');
 })->name('home');
 
-// Authentication Routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/signup', [AuthController::class, 'showSignup'])->name('signup');
-Route::post('/signup', [AuthController::class, 'register']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Authentication Routes (avoid conflicting with Livewire routes defined in auth.php)
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login.fallback');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+    Route::get('/signup', [AuthController::class, 'showSignup'])->name('signup');
+    Route::post('/signup', [AuthController::class, 'register'])->name('signup.post');
+});
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout.controller');
 
 // Settings Routes (authenticated users)
 Route::middleware(['auth'])->group(function () {
@@ -41,15 +45,20 @@ Route::middleware(['auth'])->get('/dashboard', function () {
             return redirect()->route('developer.dashboard');
         case 'user':
             return redirect()->route('user.dashboard');
+        case 'project_manager':
+            return redirect()->route('project_manager.dashboard');
         default:
             return redirect()->route('home');
     }
-})->name('dashboard.redirect');
+})->name('dashboard');
 
-// Admin Dashboard
-Route::middleware(['auth', 'role:admin'])->get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+// Admin Dashboard + Users
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::patch('/admin/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('admin.users.role');
+    Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
+});
 
 // Developer Dashboard
 Route::middleware(['auth', 'role:developer'])->prefix('developer')->group(function () {
@@ -61,5 +70,10 @@ Route::middleware(['auth', 'role:developer'])->prefix('developer')->group(functi
 Route::middleware(['auth', 'role:project_manager'])->get('/project_manager/dashboard', function () {
     return view('project_manager.dashboard');
 })->name('project_manager.dashboard');
+
+// User Dashboard (basic placeholder)
+Route::middleware(['auth', 'role:user'])->get('/user/dashboard', function () {
+    return view('dashboard');
+})->name('user.dashboard');
 
 require __DIR__.'/auth.php';
