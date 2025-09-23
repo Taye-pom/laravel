@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Developer;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Developer;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin User',
             'email' => 'admin@devcollab.com',
             'role' => 'admin',
-            'password' => Hash::make('password123')
+            'password' => Hash::make('password123'),
         ]);
 
         // Create test developer user
@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'John Doe',
             'email' => 'developer@devcollab.com',
             'role' => 'developer',
-            'password' => Hash::make('password123')
+            'password' => Hash::make('password123'),
         ]);
 
         // Create developer profile
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
             'active_tasks' => 5,
             'completed_projects' => 12,
             'hours_logged' => 160,
-            
+
         ]);
 
         // Create test regular user
@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Regular User',
             'email' => 'user@devcollab.com',
             'role' => 'user',
-            'password' => Hash::make('password123')
+            'password' => Hash::make('password123'),
         ]);
 
         // Create additional developer for testing
@@ -58,7 +58,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Sarah Chen',
             'email' => 'sarah@devcollab.com',
             'role' => 'developer',
-            'password' => Hash::make('password123')
+            'password' => Hash::make('password123'),
         ]);
 
         Developer::create([
@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
             'active_tasks' => 3,
             'completed_projects' => 8,
             'hours_logged' => 120,
-           
+
         ]);
         // User::factory(10)->create();
 

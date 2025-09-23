@@ -1,19 +1,24 @@
 <?php
 
-use App\Livewire\Settings\Profile;
-use App\Livewire\Settings\Password;
-use App\Livewire\Settings\Appearance;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminDeveloperController;
+use App\Http\Controllers\Admin\AdminProjectController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Admin\AdminReportController;
+use App\Http\Controllers\DeveloperController;
+use App\Http\Controllers\ProjectManagerController;
+use App\Livewire\Settings\Appearance;
+use App\Livewire\Settings\Password;
+use App\Livewire\Settings\Profile;
+use Illuminate\Support\Facades\Route;
 
 // Home page
 Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('dashboard');
     }
+
     return view('home');
 })->name('home');
 
@@ -58,6 +63,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
     Route::patch('/admin/users/{user}/role', [AdminUserController::class, 'updateRole'])->name('admin.users.role');
     Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::get('/admin/projects', [AdminProjectController::class, 'index'])->name('admin.projects.index');
+    Route::post('/admin/projects', [AdminProjectController::class, 'store'])->name('admin.projects.store');
+    Route::put('/admin/projects/{project}', [AdminProjectController::class, 'update'])->name('admin.projects.update');
+    Route::delete('/admin/projects/{project}', [AdminProjectController::class, 'destroy'])->name('admin.projects.destroy');
+    Route::get('/admin/developers', [AdminDeveloperController::class, 'index'])->name('admin.developers.index');
+    Route::get('/admin/reports', [AdminReportController::class, 'index'])->name('admin.reports.index');
 });
 
 // Developer Dashboard
@@ -66,10 +77,8 @@ Route::middleware(['auth', 'role:developer'])->prefix('developer')->group(functi
     Route::put('/profile', [DeveloperController::class, 'update'])->name('developer.update');
 });
 
-// Project manager Dashboard (placeholder for now)
-Route::middleware(['auth', 'role:project_manager'])->get('/project_manager/dashboard', function () {
-    return view('project_manager.dashboard');
-})->name('project_manager.dashboard');
+// Project manager Dashboard
+Route::middleware(['auth', 'role:project_manager'])->get('/project_manager/dashboard', [ProjectManagerController::class, 'index'])->name('project_manager.dashboard');
 
 // User Dashboard (basic placeholder)
 Route::middleware(['auth', 'role:user'])->get('/user/dashboard', function () {

@@ -11,6 +11,7 @@ class AdminUserController extends Controller
     public function index()
     {
         $users = User::orderByDesc('created_at')->paginate(20);
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -36,5 +37,3 @@ class AdminUserController extends Controller
         return back()->with('status', 'User deleted');
     }
 }
-
-

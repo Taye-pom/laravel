@@ -568,7 +568,7 @@
                 </div>
                 <div class="stats-card">
                     <i class="fas fa-project-diagram stats-icon"></i>
-                    <div class="stats-number" id="activeProjects">23</div>
+                    <div class="stats-number" id="activeProjects">{{ $stats['activeProjects'] ?? 0 }}</div>
                     <div class="stats-label">Active Projects</div>
                 </div>
                 <div class="stats-card">
@@ -623,9 +623,9 @@
                             <button class="btn btn-yellow" onclick="showCreateUserModal()">
                                 <i class="fas fa-user-plus"></i> Add New User
                             </button>
-                            <button class="btn btn-outline-yellow" onclick="showCreateProjectModal()">
+                            <a class="btn btn-outline-yellow" href="{{ route('admin.projects.index') }}">
                                 <i class="fas fa-plus"></i> Create Project
-                            </button>
+                            </a>
                             <button class="btn btn-outline-yellow" onclick="showPage('reports')">
                                 <i class="fas fa-download"></i> Generate Report
                             </button>

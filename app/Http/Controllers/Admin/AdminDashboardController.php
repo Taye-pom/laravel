@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Project;
 use App\Models\User;
 
 class AdminDashboardController extends Controller
@@ -16,10 +17,11 @@ class AdminDashboardController extends Controller
             'totalDevelopers' => User::where('role', 'developer')->count(),
             'totalAdmins' => User::where('role', 'admin')->count(),
             'totalProjectManagers' => User::where('role', 'project_manager')->count(),
+            'activeProjects' => Project::where('status', 'active')->count(),
         ];
 
-        return view('admin.dashboard', compact('users', 'stats'));
+        $managers = User::where('role', 'project_manager')->orderBy('name')->get(['id', 'name']);
+
+        return view('admin.dashboard', compact('users', 'stats', 'managers'));
     }
 }
-
-
