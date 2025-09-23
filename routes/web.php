@@ -67,6 +67,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/projects', [AdminProjectController::class, 'store'])->name('admin.projects.store');
     Route::put('/admin/projects/{project}', [AdminProjectController::class, 'update'])->name('admin.projects.update');
     Route::delete('/admin/projects/{project}', [AdminProjectController::class, 'destroy'])->name('admin.projects.destroy');
+    Route::post('/admin/projects/{project}/assign', [AdminProjectController::class, 'assign'])->name('admin.projects.assign');
+    Route::post('/admin/projects/{project}/unassign', [AdminProjectController::class, 'unassign'])->name('admin.projects.unassign');
     Route::get('/admin/developers', [AdminDeveloperController::class, 'index'])->name('admin.developers.index');
     Route::get('/admin/reports', [AdminReportController::class, 'index'])->name('admin.reports.index');
 });

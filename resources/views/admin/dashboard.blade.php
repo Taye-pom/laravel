@@ -537,7 +537,12 @@
                             <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i> Profile</a></li>
                             <li><a class="dropdown-item" href="#"><i class="fas fa-bell"></i> Notifications</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                            <li>
+                                <form action="{{ route('logout.controller') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                 </ul>

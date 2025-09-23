@@ -7,10 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ProjectManagerController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:project_manager']);
-    }
+    // Route-level middleware is applied in routes/web.php
 
     public function index()
     {

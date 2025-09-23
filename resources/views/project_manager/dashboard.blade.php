@@ -290,7 +290,19 @@
                         <li><a class="dropdown-item" href="#">Team member joined</a></li>
                     </ul>
                 </div>
-                <img src="https://via.placeholder.com/40x40" class="rounded-circle" alt="Profile">
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <img src="https://via.placeholder.com/28x28" class="rounded-circle" alt="Profile">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <form action="{{ route('logout.controller') }}" method="POST" class="px-3 py-1">
+                                @csrf
+                                <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -358,39 +370,26 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>E-commerce Platform</td>
-                                        <td>
-                                            <div class="progress progress-modern">
-                                                <div class="progress-bar progress-bar-yellow" style="width: 85%"></div>
-                                            </div>
-                                            <small>85%</small>
-                                        </td>
-                                        <td>Dec 15, 2024</td>
-                                        <td><span class="badge bg-success">On Track</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Mobile App</td>
-                                        <td>
-                                            <div class="progress progress-modern">
-                                                <div class="progress-bar progress-bar-yellow" style="width: 60%"></div>
-                                            </div>
-                                            <small>60%</small>
-                                        </td>
-                                        <td>Jan 20, 2025</td>
-                                        <td><span class="badge bg-warning">At Risk</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>API Integration</td>
-                                        <td>
-                                            <div class="progress progress-modern">
-                                                <div class="progress-bar progress-bar-yellow" style="width: 95%"></div>
-                                            </div>
-                                            <small>95%</small>
-                                        </td>
-                                        <td>Nov 30, 2024</td>
-                                        <td><span class="badge bg-success">On Track</span></td>
-                                    </tr>
+                                    @isset($projects)
+                                        @forelse($projects as $project)
+                                            <tr>
+                                                <td>{{ $project->name }}</td>
+                                                <td>
+                                                    <div class="progress progress-modern">
+                                                        <div class="progress-bar progress-bar-yellow" style="width: {{ (int)($project->progress ?? 0) }}%"></div>
+                                                    </div>
+                                                    <small>{{ (int)($project->progress ?? 0) }}%</small>
+                                                </td>
+                                                <td>{{ optional($project->end_date)->format('M d, Y') ?? '-' }}</td>
+                                                <td>
+                                                    @php($badge = match($project->status){'active'=>'bg-success','completed'=>'bg-secondary','on-hold'=>'bg-warning text-dark','planned'=>'bg-info',default=>'bg-light text-dark'})
+                                                    <span class="badge {{ $badge }}">{{ ucfirst($project->status) }}</span>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr><td colspan="4" class="text-center text-muted">No projects</td></tr>
+                                        @endforelse
+                                    @endisset
                                 </tbody>
                             </table>
                         </div>

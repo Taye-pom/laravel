@@ -9,10 +9,7 @@ use App\Models\Project;
 
 class DeveloperController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:developer']);
-    }
+    // Route-level middleware is applied in routes/web.php
 
     // Show Dashboard
     public function index()
@@ -34,7 +31,7 @@ class DeveloperController extends Controller
         // dd('Developer dashboard accessed'); // This will show if the method is reached
 
         //  $user = Auth::user();
-        $projects = Project::where('status','!=','completed')->orderByDesc('created_at')->limit(10)->get();
+        $projects = $user->projects()->where('status','!=','completed')->orderByDesc('created_at')->limit(10)->get();
 
         return view('developer.dashboard', compact('developer','projects'));
     }

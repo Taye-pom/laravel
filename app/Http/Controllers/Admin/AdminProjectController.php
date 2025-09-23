@@ -11,7 +11,7 @@ class AdminProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::with(['manager', 'creator'])->orderByDesc('created_at')->paginate(12);
+        $projects = Project::with(['manager', 'creator','users'])->orderByDesc('created_at')->paginate(12);
 
         return view('admin.projects.index', compact('projects'));
     }
@@ -23,6 +23,7 @@ class AdminProjectController extends Controller
             'description' => 'nullable|string',
             'status' => 'required|in:planned,active,completed,on-hold',
             'priority' => 'required|in:low,medium,high',
+            'progress' => 'nullable|integer|min:0|max:100',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'manager_id' => 'nullable|exists:users,id',
@@ -42,6 +43,7 @@ class AdminProjectController extends Controller
             'description' => 'nullable|string',
             'status' => 'required|in:planned,active,completed,on-hold',
             'priority' => 'required|in:low,medium,high',
+            'progress' => 'nullable|integer|min:0|max:100',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'manager_id' => 'nullable|exists:users,id',
@@ -57,5 +59,25 @@ class AdminProjectController extends Controller
         $project->delete();
 
         return back()->with('status', 'Project deleted');
+    }
+
+    public function assign(Project $project, Request $request)
+    {
+        $data = $request->validate([
+            'user_id' => ['required','exists:users,id'],
+        ]);
+        $project->users()->syncWithoutDetaching([$data['user_id']]);
+
+        return back()->with('status', 'Developer assigned');
+    }
+
+    public function unassign(Project $project, Request $request)
+    {
+        $data = $request->validate([
+            'user_id' => ['required','exists:users,id'],
+        ]);
+        $project->users()->detach($data['user_id']);
+
+        return back()->with('status', 'Developer unassigned');
     }
 }

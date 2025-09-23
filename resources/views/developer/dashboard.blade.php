@@ -310,9 +310,12 @@
                                 <i class="fas fa-cog"></i> Settings
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#logout">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </a></li>
+                            <li>
+                                <form action="{{ route('logout.controller') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -655,32 +658,41 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tasksTableBody">
+                                                    @forelse($projects as $project)
                                                     <tr>
                                                         <td>
-                                                            <h6 class="mb-1">Implement User Authentication</h6>
-                                                            <small class="text-muted">Create login/register functionality</small>
+                                                            <h6 class="mb-1">{{ $project->name }}</h6>
+                                                            <small class="text-muted">{{ \Illuminate\Support\Str::limit($project->description, 80) }}</small>
                                                         </td>
-                                                        <td>E-Commerce Platform</td>
-                                                        <td><span class="badge badge-priority-high">High</span></td>
-                                                        <td><span class="badge bg-warning">In Progress</span></td>
-                                                        <td>Oct 15, 2024</td>
+                                                        <td>{{ $project->name }}</td>
+                                                        <td>
+                                                            @php($pri = $project->priority ?? 'medium')
+                                                            <span class="badge {{ $pri === 'high' ? 'badge-priority-high' : ($pri === 'low' ? 'badge-priority-low' : 'badge-priority-medium') }}">{{ ucfirst($pri) }}</span>
+                                                        </td>
+                                                        <td>
+                                                            @php($st = $project->status)
+                                                            <span class="badge {{ $st === 'active' ? 'bg-warning' : ($st === 'completed' ? 'bg-success' : ($st === 'on-hold' ? 'bg-secondary' : 'bg-info') ) }}">{{ ucfirst($st) }}</span>
+                                                        </td>
+                                                        <td>{{ optional($project->end_date)->format('M d, Y') ?? '-' }}</td>
                                                         <td>
                                                             <div class="progress-custom">
-                                                                <div class="progress-bar" style="width: 100%"></div>
+                                                                <div class="progress-bar" style="width: {{ (int)($project->progress ?? 0) }}%"></div>
                                                             </div>
-                                                            <small>100%</small>
+                                                            <small>{{ (int)($project->progress ?? 0) }}%</small>
                                                         </td>
                                                         <td>
                                                             <div class="btn-group btn-group-sm">
-                                                                <button class="btn btn-warning">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </button>
-                                                                <button class="btn btn-success">
-                                                                    <i class="fas fa-check"></i>
+                                                                <button class="btn btn-outline-secondary" disabled>
+                                                                    <i class="fas fa-eye"></i>
                                                                 </button>
                                                             </div>
                                                         </td>
                                                     </tr>
+                                                    @empty
+                                                    <tr>
+                                                        <td colspan="7" class="text-center text-muted">No projects to display</td>
+                                                    </tr>
+                                                    @endforelse
                                                 </tbody>
                                             </table>
                                         </div>
