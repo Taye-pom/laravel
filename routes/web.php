@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\AdminReportController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\ProjectManagerController;
+use App\Http\Controllers\TaskController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -29,7 +30,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/signup', [AuthController::class, 'showSignup'])->name('signup');
     Route::post('/signup', [AuthController::class, 'register'])->name('signup.post');
 });
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout.controller');
+// Logout route is handled by Livewire in routes/auth.php
 
 // Settings Routes (authenticated users)
 Route::middleware(['auth'])->group(function () {
@@ -77,6 +78,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'role:developer'])->prefix('developer')->group(function () {
     Route::get('/dashboard', [DeveloperController::class, 'index'])->name('developer.dashboard');
     Route::put('/profile', [DeveloperController::class, 'update'])->name('developer.update');
+    Route::get('/tasks', \App\Livewire\TaskManagement::class)->name('developer.tasks');
+    Route::get('/profile', \App\Livewire\DeveloperProfile::class)->name('developer.profile');
+    Route::get('/time-tracking', \App\Livewire\TimeTracking::class)->name('developer.time-tracking');
+    Route::get('/reports', \App\Livewire\Reports::class)->name('developer.reports');
 });
 
 // Project manager Dashboard
@@ -86,5 +91,15 @@ Route::middleware(['auth', 'role:project_manager'])->get('/project_manager/dashb
 Route::middleware(['auth', 'role:user'])->get('/user/dashboard', function () {
     return view('dashboard');
 })->name('user.dashboard');
+
+// Task Management Routes
+Route::middleware(['auth'])->group(function () {
+    Route::apiResource('tasks', TaskController::class);
+    Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status');
+    Route::patch('/tasks/{task}/assign', [TaskController::class, 'assign'])->name('tasks.assign');
+    Route::get('/projects/{project}/tasks', [TaskController::class, 'projectTasks'])->name('projects.tasks');
+    Route::get('/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.my');
+    Route::get('/notifications', \App\Livewire\Notifications::class)->name('notifications');
+});
 
 require __DIR__.'/auth.php';

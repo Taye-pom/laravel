@@ -311,7 +311,7 @@
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form action="{{ route('logout.controller') }}" method="POST">
+                                <form action="{{ route('logout') }}" method="POST">
                                     @csrf
                                     <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
                                 </form>
@@ -336,7 +336,7 @@
                         <i class="fas fa-folder-open"></i>
                         <span>My Projects</span>
                     </div>
-                    <div class="sidebar-item" onclick="showSection('tasks')">
+                    <div class="sidebar-item" onclick="window.location.href='{{ route('developer.tasks') }}'">
                         <i class="fas fa-clipboard-list"></i>
                         <span>Task Management</span>
                     </div>
@@ -349,15 +349,15 @@
                         <i class="fas fa-code-branch"></i>
                         <span>Code Reviews</span>
                     </div>
-                    <div class="sidebar-item" onclick="showSection('timeTracking')">
+                    <div class="sidebar-item" onclick="window.location.href='{{ route('developer.time-tracking') }}'">
                         <i class="fas fa-clock"></i>
                         <span>Time Tracking</span>
                     </div>
-                    <div class="sidebar-item" onclick="showSection('reports')">
+                    <div class="sidebar-item" onclick="window.location.href='{{ route('developer.reports') }}'">
                         <i class="fas fa-chart-line"></i>
                         <span>Reports</span>
                     </div>
-                    <div class="sidebar-item" onclick="showSection('profile')">
+                    <div class="sidebar-item" onclick="window.location.href='{{ route('developer.profile') }}'">
                         <i class="fas fa-user-cog"></i>
                         <span>Profile</span>
                     </div>
@@ -372,7 +372,7 @@
                         <div class="row mb-4">
                             <div class="col-12">
                                 <h2 class="mb-4"><i class="fas fa-tachometer-alt"></i> Developer Dashboard</h2>
-                                <p class="text-muted">Welcome back, John Doe! Here's your development overview.</p>
+                                <p class="text-muted">Welcome back, {{ auth()->user()->name }}! Here's your development overview.</p>
                             </div>
                         </div>
 
@@ -380,26 +380,26 @@
                         <div class="row mb-4">
                             <div class="col-lg-3 col-md-6 mb-3">
                                 <div class="stats-card">
-                                    <div class="stats-number">8</div>
-                                    <div>Active Tasks</div>
+                                    <div class="stats-number">{{ $taskStats['total'] ?? 0 }}</div>
+                                    <div>Total Tasks</div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 mb-3">
                                 <div class="stats-card">
-                                    <div class="stats-number">3</div>
-                                    <div>Projects</div>
+                                    <div class="stats-number">{{ $taskStats['in_progress'] ?? 0 }}</div>
+                                    <div>In Progress</div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 mb-3">
                                 <div class="stats-card">
-                                    <div class="stats-number">12</div>
+                                    <div class="stats-number">{{ $taskStats['completed'] ?? 0 }}</div>
                                     <div>Completed</div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-6 mb-3">
-                                <div class="stats-card">
-                                    <div class="stats-number">85%</div>
-                                    <div>Efficiency</div>
+                                <div class="stats-card {{ ($taskStats['overdue'] ?? 0) > 0 ? 'text-danger' : '' }}">
+                                    <div class="stats-number">{{ $taskStats['overdue'] ?? 0 }}</div>
+                                    <div>Overdue</div>
                                 </div>
                             </div>
                         </div>
@@ -412,47 +412,38 @@
                                         <h5 class="mb-0"><i class="fas fa-tasks"></i> Recent Tasks</h5>
                                     </div>
                                     <div class="card-body">
-                                        <div class="task-item">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <h6 class="mb-1">Implement User Authentication</h6>
-                                                    <small class="text-muted">E-Commerce Platform</small>
+                                        @forelse($assignedTasks as $task)
+                                            <div class="task-item">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h6 class="mb-1">{{ $task->title }}</h6>
+                                                        <small class="text-muted">{{ $task->project->name }}</small>
+                                                    </div>
+                                                    <span class="badge badge-priority-{{ $task->priority }}">{{ ucfirst($task->priority) }}</span>
                                                 </div>
-                                                <span class="badge badge-priority-high">High</span>
-                                            </div>
-                                            <div class="progress-custom mt-2">
-                                                <div class="progress-bar" style="width: 75%"></div>
-                                            </div>
-                                            <small class="text-muted">Due: Tomorrow</small>
-                                        </div>
-
-                                        <div class="task-item">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <h6 class="mb-1">Fix Payment Gateway Bug</h6>
-                                                    <small class="text-muted">Mobile App</small>
+                                                <div class="progress-custom mt-2">
+                                                    @php
+                                                        $progress = 0;
+                                                        if ($task->status === 'completed') $progress = 100;
+                                                        elseif ($task->status === 'in_progress') $progress = 50;
+                                                        elseif ($task->status === 'review') $progress = 75;
+                                                    @endphp
+                                                    <div class="progress-bar" style="width: {{ $progress }}%"></div>
                                                 </div>
-                                                <span class="badge badge-priority-medium">Medium</span>
+                                                <small class="text-muted {{ $task->isOverdue() ? 'text-danger' : '' }}">
+                                                    @if($task->due_date)
+                                                        Due: {{ $task->due_date->format('M d, Y') }}
+                                                    @else
+                                                        No due date
+                                                    @endif
+                                                </small>
                                             </div>
-                                            <div class="progress-custom mt-2">
-                                                <div class="progress-bar" style="width: 45%"></div>
+                                        @empty
+                                            <div class="text-center py-3">
+                                                <i class="fas fa-tasks fa-2x text-muted mb-2"></i>
+                                                <p class="text-muted mb-0">No tasks assigned yet</p>
                                             </div>
-                                            <small class="text-muted">Due: Friday</small>
-                                        </div>
-
-                                        <div class="task-item">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <h6 class="mb-1">Update Documentation</h6>
-                                                    <small class="text-muted">API Project</small>
-                                                </div>
-                                                <span class="badge badge-priority-low">Low</span>
-                                            </div>
-                                            <div class="progress-custom mt-2">
-                                                <div class="progress-bar" style="width: 20%"></div>
-                                            </div>
-                                            <small class="text-muted">Due: Next Week</small>
-                                        </div>
+                                        @endforelse
                                     </div>
                                 </div>
                             </div>

@@ -9,7 +9,8 @@ class Developer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id',
+    protected $fillable = [
+        'user_id',
         'title',
         'experience_level',
         'skills',
@@ -18,6 +19,10 @@ class Developer extends Model
         'active_tasks',
         'completed_projects',
         'hours_logged',
+        'avatar',
+        'github_url',
+        'linkedin_url',
+        'portfolio_url',
     ];
 
     protected $casts = [

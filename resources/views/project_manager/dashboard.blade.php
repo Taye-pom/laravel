@@ -296,7 +296,7 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                            <form action="{{ route('logout.controller') }}" method="POST" class="px-3 py-1">
+                            <form action="{{ route('logout') }}" method="POST" class="px-3 py-1">
                                 @csrf
                                 <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
                             </form>

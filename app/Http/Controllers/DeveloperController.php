@@ -32,8 +32,27 @@ class DeveloperController extends Controller
 
         //  $user = Auth::user();
         $projects = $user->projects()->where('status','!=','completed')->orderByDesc('created_at')->limit(10)->get();
+        
+        // Get assigned tasks
+        $assignedTasks = $user->assignedTasks()
+            ->with(['project', 'creator'])
+            ->orderBy('due_date', 'asc')
+            ->limit(10)
+            ->get();
 
-        return view('developer.dashboard', compact('developer','projects'));
+        // Get task statistics
+        $taskStats = [
+            'total' => $user->assignedTasks()->count(),
+            'completed' => $user->assignedTasks()->where('status', 'completed')->count(),
+            'in_progress' => $user->assignedTasks()->where('status', 'in_progress')->count(),
+            'todo' => $user->assignedTasks()->where('status', 'todo')->count(),
+            'overdue' => $user->assignedTasks()
+                ->where('due_date', '<', now())
+                ->where('status', '!=', 'completed')
+                ->count(),
+        ];
+
+        return view('developer.dashboard', compact('developer', 'projects', 'assignedTasks', 'taskStats'));
     }
 
     // Update Developer Profile

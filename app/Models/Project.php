@@ -39,4 +39,39 @@ class Project extends Model
     {
         return $this->belongsToMany(User::class)->withTimestamps();
     }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function getProgressPercentageAttribute()
+    {
+        $totalTasks = $this->tasks()->count();
+        if ($totalTasks === 0) return 0;
+        
+        $completedTasks = $this->tasks()->where('status', 'completed')->count();
+        return round(($completedTasks / $totalTasks) * 100);
+    }
+
+    public function getStatusBadgeAttribute()
+    {
+        return match($this->status) {
+            'planned' => 'secondary',
+            'active' => 'primary',
+            'completed' => 'success',
+            'on-hold' => 'warning',
+            default => 'secondary',
+        };
+    }
+
+    public function getPriorityBadgeAttribute()
+    {
+        return match($this->priority) {
+            'low' => 'success',
+            'medium' => 'warning',
+            'high' => 'danger',
+            default => 'secondary',
+        };
+    }
 }
