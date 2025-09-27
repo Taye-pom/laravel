@@ -18,6 +18,7 @@ class Project extends Model
         'end_date',
         'manager_id',
         'created_by',
+        'budget',
     ];
 
     protected $casts = [

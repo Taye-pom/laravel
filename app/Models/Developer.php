@@ -46,4 +46,8 @@ class Developer extends Model
     {
         return str_repeat('⭐', (int) $this->rating);
     }
+        public function isOverdue()
+    {
+        return $this->due_date && $this->due_date < Carbon::today() && $this->status !== 'done';
+    }
 }

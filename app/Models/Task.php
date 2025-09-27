@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+
 
 class Task extends Model
 {
@@ -24,9 +26,9 @@ class Task extends Model
     ];
 
     protected $casts = [
-        'due_date' => 'date',
-        'estimated_hours' => 'integer',
-        'actual_hours' => 'integer',
+        'due_date'       => 'date',
+        'estimated_hours'=> 'integer',
+        'actual_hours'   => 'integer',
     ];
 
     public function project()
@@ -43,32 +45,8 @@ class Task extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-
-    public function getStatusBadgeAttribute()
+        public function isOverdue()
     {
-        return match($this->status) {
-            'todo' => 'secondary',
-            'in_progress' => 'primary',
-            'review' => 'warning',
-            'completed' => 'success',
-            'cancelled' => 'danger',
-            default => 'secondary',
-        };
-    }
-
-    public function getPriorityBadgeAttribute()
-    {
-        return match($this->priority) {
-            'low' => 'success',
-            'medium' => 'warning',
-            'high' => 'danger',
-            'urgent' => 'dark',
-            default => 'secondary',
-        };
-    }
-
-    public function isOverdue()
-    {
-        return $this->due_date && $this->due_date->isPast() && $this->status !== 'completed';
+        return $this->due_date && $this->due_date < Carbon::today() && $this->status !== 'done';
     }
 }

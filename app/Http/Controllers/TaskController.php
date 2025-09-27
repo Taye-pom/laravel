@@ -39,36 +39,53 @@ class TaskController extends Controller
 
         $tasks = $query->orderBy('created_at', 'desc')->paginate(15);
 
-        return response()->json($tasks);
+            $tasks = Task::with(['project', 'assignee']) // relations pour éviter N+1
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        $todo       = $tasks->where('status', 'todo');
+        $inProgress = $tasks->where('status', 'in_progress');
+        $done       = $tasks->where('status', 'done');
+
+        return view('project_manager.dashboard', compact('todo', 'inProgress', 'done'));
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'project_id' => 'required|exists:projects,id',
-            'assigned_to' => 'nullable|exists:users,id',
-            'priority' => 'required|in:low,medium,high,urgent',
-            'due_date' => 'nullable|date|after:today',
-            'estimated_hours' => 'nullable|integer|min:1',
-            'notes' => 'nullable|string',
-        ]);
+        {
+            $validated = $request->validate([
+                'title'           => 'required|string|max:255',
+                'description'     => 'nullable|string',
+                'project_id'      => 'required|exists:projects,id',
+                'assigned_to'     => 'nullable|exists:users,id',
+                'priority'        => 'required|in:low,medium,high,urgent',
+                'due_date'        => 'nullable|date|after:today',
+                'estimated_hours' => 'nullable|integer|min:1',
+                'notes'           => 'nullable|string',
+            ]);
 
-        $validated['created_by'] = Auth::id();
-        $validated['status'] = 'todo';
+            $validated['created_by'] = Auth::id();
+            $validated['status']     = 'todo';
 
-        $task = Task::create($validated);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Tâche créée avec succès',
-            'task' => $task->load(['project', 'assignedTo', 'creator'])
-        ], 201);
+            $task = Task::create($validated);
+            return redirect()->route('project_manager.dashboard', compact('task'))->with('success', 'Tâche créée avec succès');
     }
+        public function dashboard()
+    {
+        $tasks = Task::with(['project', 'assignee']) // relations pour éviter N+1
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $todo       = $tasks->where('status', 'todo');
+        $inProgress = $tasks->where('status', 'in_progress');
+        $completed   = $tasks->where('status', 'completed');
+
+        return view('project_manager.dashboard', compact('todo', 'inProgress', 'completed'));
+    }
+
 
     /**
      * Display the specified resource.

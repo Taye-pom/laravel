@@ -7,6 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="project/logo.png" type="image/x-icon">
     <style>
         :root {
             --primary-yellow: #ffc107;
@@ -41,6 +42,11 @@
             font-size: 1.5rem;
             font-weight: bold;
             text-align: center;
+        }
+        .sidebar .brand img {
+            height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
         }
 
         .sidebar .nav-link {
@@ -238,7 +244,8 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="brand">
-            <i class="fas fa-code-branch me-2"></i>DevCollab PM
+            {{-- <img src="{{ asset('project/origin.png') }}" alt="Yachad Logo">DevCollab PM --}}
+            <a class="navbar-brand fw-bold" href="{{route('project_manager.dashboard')}}"><img src="{{ asset('project/origin.png') }}" alt="Yachad Logo">PMCollab</a>
         </div>
         <nav class="nav flex-column">
             <a class="nav-link active" href="#" onclick="showSection('dashboard')">
@@ -276,7 +283,7 @@
                 <button class="btn btn-outline-secondary d-md-none" onclick="toggleSidebar()">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h4 class="mb-0 ms-3 d-inline">Welcome back, Alex!</h4>
+                <h4 class="mb-0 ms-3 d-inline">Welcome back, {{ Auth::user()->name }}!</h4>
             </div>
             <div class="d-flex align-items-center">
                 <div class="dropdown me-3">
@@ -404,7 +411,7 @@
                             </div>
                             <div>
                                 <small class="text-muted">2 hours ago</small>
-                                <p class="mb-0">Sarah completed "User Authentication"</p>
+                                {{-- <p class="mb-0">{{ Auth::user()->developer->name }} completed "User Authentication"</p> --}}
                             </div>
                         </div>
                         <div class="activity-item d-flex align-items-center mb-3">
@@ -413,7 +420,7 @@
                             </div>
                             <div>
                                 <small class="text-muted">4 hours ago</small>
-                                <p class="mb-0">Mike pushed new commits</p>
+                                {{-- <p class="mb-0">{{ Auth::user()->developer->name }} pushed new commits</p> --}}
                             </div>
                         </div>
                         <div class="activity-item d-flex align-items-center mb-3">
@@ -577,52 +584,83 @@
                 </button>
             </div>
 
-            <div class="row mb-4">
-                <div class="col-md-4">
-                    <select class="form-select" id="projectFilter">
-                        <option value="">All Projects</option>
-                        <option value="1">E-commerce Platform</option>
-                        <option value="2">Mobile App</option>
-                        <option value="3">API Integration</option>
-                    </select>
+            <div class="row">
+                {{-- To Do --}}
+                <div class="col-lg-4">
+                    <h5 class="mb-3">To Do</h5>
+                    @forelse($todo as $task)
+                        <div class="task-card priority-{{ $task->priority }}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6>{{ $task->title }}</h6>
+                                <span class="badge bg-warning text-dark">{{ ucfirst($task->priority) }}</span>
+                            </div>
+                            <p class="text-muted small">{{ $task->project->name ?? 'No Project' }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
+                                    <small>{{ $task->assignee->name ?? 'Unassigned' }}</small>
+                                </div>
+                                <small class="text-muted">Due: {{ $task->due_date ? $task->due_date->format('M d') : 'N/A' }}</small>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-muted">No tasks yet</p>
+                    @endforelse
                 </div>
-                <div class="col-md-4">
-                    <select class="form-select" id="statusFilter">
-                        <option value="">All Status</option>
-                        <option value="todo">To Do</option>
-                        <option value="progress">In Progress</option>
-                        <option value="review">In Review</option>
-                        <option value="done">Done</option>
-                    </select>
+
+                {{-- In Progress --}}
+                <div class="col-lg-4">
+                    <h5 class="mb-3">In Progress</h5>
+                    @forelse($inProgress as $task)
+                        <div class="task-card priority-{{ $task->priority }}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6>{{ $task->title }}</h6>
+                                <span class="badge bg-info text-dark">In Progress</span>
+                            </div>
+                            <p class="text-muted small">{{ $task->project->name ?? 'No Project' }}</p>
+                            <div class="progress progress-modern mb-2">
+                                <div class="progress-bar progress-bar-yellow" style="width: 50%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
+                                    <small>{{ $task->assignee->name ?? 'Unassigned' }}</small>
+                                </div>
+                                <small class="text-muted">Ongoing</small>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-muted">No tasks yet</p>
+                    @endforelse
                 </div>
-                <div class="col-md-4">
-                    <select class="form-select" id="priorityFilter">
-                        <option value="">All Priorities</option>
-                        <option value="high">High</option>
-                        <option value="medium">Medium</option>
-                        <option value="low">Low</option>
-                    </select>
+
+                <div class="col-lg-4">
+                    <h5 class="mb-3">Completed</h5>
+                    @forelse($completed as $task)
+                        <div class="task-card priority-{{ $task->priority }}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6>{{ $task->title }}</h6>
+                                <span class="badge bg-success">Completed</span>
+                            </div>
+                            <p class="text-muted small">{{ $task->project->name ?? 'No Project' }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
+                                    <small>{{ $task->assignee->name ?? 'Unassigned' }}</small>
+                                </div>
+                                <small class="text-success">Completed</small>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-muted">No tasks yet</p>
+                    @endforelse
                 </div>
             </div>
+
 
             <div class="row">
                 <div class="col-lg-4">
                     <h5 class="mb-3">To Do</h5>
-                    <div class="task-card priority-high">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6>Fix payment gateway bug</h6>
-                            <span class="badge bg-danger">High</span>
-                        </div>
-                        <p class="text-muted small">E-commerce Platform</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
-                                <small>Sarah Johnson</small>
-                            </div>
-                            <small class="text-muted">Due: Nov 20</small>
-                        </div>
-                    </div>
-
                     <div class="task-card priority-medium">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h6>Design user profile page</h6>
@@ -632,7 +670,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
-                                <small>Mike Chen</small>
+                                {{-- <small>{{ Auth::user()->developer->name }}</small> --}}
                             </div>
                             <small class="text-muted">Due: Nov 25</small>
                         </div>
@@ -641,24 +679,6 @@
 
                 <div class="col-lg-4">
                     <h5 class="mb-3">In Progress</h5>
-                    <div class="task-card priority-high">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6>User authentication system</h6>
-                            <span class="badge bg-danger">High</span>
-                        </div>
-                        <p class="text-muted small">E-commerce Platform</p>
-                        <div class="progress progress-modern mb-2">
-                            <div class="progress-bar progress-bar-yellow" style="width: 70%"></div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
-                                <small>John Doe</small>
-                            </div>
-                            <small class="text-muted">70% Complete</small>
-                        </div>
-                    </div>
-
                     <div class="task-card priority-low">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h6>API documentation</h6>
@@ -671,14 +691,14 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
-                                <small>Emma Wilson</small>
+                                {{-- <small>{{ Auth::user()->developer->name }}</small> --}}
                             </div>
                             <small class="text-muted">30% Complete</small>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-4">`
                     <h5 class="mb-3">Done</h5>
                     <div class="task-card priority-medium">
                         <div class="d-flex justify-content-between align-items-start mb-2">
@@ -690,21 +710,6 @@
                             <div>
                                 <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
                                 <small>Alex Rodriguez</small>
-                            </div>
-                            <small class="text-success">Completed</small>
-                        </div>
-                    </div>
-
-                    <div class="task-card priority-low">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6>Unit tests implementation</h6>
-                            <span class="badge bg-success">Completed</span>
-                        </div>
-                        <p class="text-muted small">API Integration</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
-                                <small>Lisa Park</small>
                             </div>
                             <small class="text-success">Completed</small>
                         </div>
@@ -745,8 +750,8 @@
                                             <div class="d-flex align-items-center">
                                                 <img src="https://via.placeholder.com/40x40" class="rounded-circle me-3" alt="User">
                                                 <div>
-                                                    <div class="fw-bold">Sarah Johnson</div>
-                                                    <small class="text-muted">sarah@company.com</small>
+                                                    {{-- <div class="fw-bold">{{ Auth::user()->developer->name }}</div> --}}
+                                                    {{-- <small class="text-muted">{{ Auth::user()->developer->email }}</small> --}}
                                                 </div>
                                             </div>
                                         </td>
@@ -767,9 +772,9 @@
                                         </td>
                                         <td><span class="badge bg-success">Active</span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" onclick="viewTeamMember('1')">View</button>
-                                            <button class="btn btn-sm btn-outline-warning me-1" onclick="editTeamMember('1')">Edit</button>
-                                            <button class="btn btn-sm btn-outline-success" onclick="rateTeamMember('1')">Rate</button>
+                                            <button type='button'class="btn btn-sm btn-outline-primary me-1" onclick="viewTeamMember('1')">View</button>
+                                            <button type='reset'class="btn btn-sm btn-outline-warning me-1" onclick="editTeamMember('1')">Edit</button>
+                                            <button type='submit'class="btn btn-sm btn-outline-success" onclick="rateTeamMember('1')">Rate</button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -777,8 +782,8 @@
                                             <div class="d-flex align-items-center">
                                                 <img src="https://via.placeholder.com/40x40" class="rounded-circle me-3" alt="User">
                                                 <div>
-                                                    <div class="fw-bold">Mike Chen</div>
-                                                    <small class="text-muted">mike@company.com</small>
+                                                    {{-- <div class="fw-bold">{{ Auth::user()->developer->name }}</div> --}}
+                                                    {{-- <small class="text-muted">{{ Auth::user()->developer->email }}</small> --}}
                                                 </div>
                                             </div>
                                         </td>
@@ -799,9 +804,9 @@
                                         </td>
                                         <td><span class="badge bg-success">Active</span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" onclick="viewTeamMember('2')">View</button>
-                                            <button class="btn btn-sm btn-outline-warning me-1" onclick="editTeamMember('2')">Edit</button>
-                                            <button class="btn btn-sm btn-outline-success" onclick="rateTeamMember('2')">Rate</button>
+                                            <button type='button'class="btn btn-sm btn-outline-primary me-1" onclick="viewTeamMember('2')">View</button>
+                                            <button type='reset'class="btn btn-sm btn-outline-warning me-1" onclick="editTeamMember('2')">Edit</button>
+                                            <button type='submit'class="btn btn-sm btn-outline-success" onclick="rateTeamMember('2')">Rate</button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -809,8 +814,8 @@
                                             <div class="d-flex align-items-center">
                                                 <img src="https://via.placeholder.com/40x40" class="rounded-circle me-3" alt="User">
                                                 <div>
-                                                    <div class="fw-bold">John Doe</div>
-                                                    <small class="text-muted">john@company.com</small>
+                                                    {{-- <div class="fw-bold">{{ Auth::user()->developer->name }}</div> --}}
+                                                    {{-- <small class="text-muted">{{ Auth::user()->developer->email }}</small> --}}
                                                 </div>
                                             </div>
                                         </td>
@@ -831,9 +836,9 @@
                                         </td>
                                         <td><span class="badge bg-warning">Busy</span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" onclick="viewTeamMember('3')">View</button>
-                                            <button class="btn btn-sm btn-outline-warning me-1" onclick="editTeamMember('3')">Edit</button>
-                                            <button class="btn btn-sm btn-outline-success" onclick="rateTeamMember('3')">Rate</button>
+                                            <button type='button'class="btn btn-sm btn-outline-primary me-1" onclick="viewTeamMember('3')">View</button>
+                                            <button type='reset'class="btn btn-sm btn-outline-warning me-1" onclick="editTeamMember('3')">Edit</button>
+                                            <button type='submit'class="btn btn-sm btn-outline-success" onclick="rateTeamMember('3')">Rate</button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -841,8 +846,8 @@
                                             <div class="d-flex align-items-center">
                                                 <img src="https://via.placeholder.com/40x40" class="rounded-circle me-3" alt="User">
                                                 <div>
-                                                    <div class="fw-bold">Emma Wilson</div>
-                                                    <small class="text-muted">emma@company.com</small>
+                                                    {{-- <div class="fw-bold">{{ Auth::user()->developer->name }}</div> --}}
+                                                    {{-- <small class="text-muted">{{ Auth::user()->developer->email }}</small> --}}
                                                 </div>
                                             </div>
                                         </td>
@@ -863,9 +868,9 @@
                                         </td>
                                         <td><span class="badge bg-success">Active</span></td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1" onclick="viewTeamMember('4')">View</button>
-                                            <button class="btn btn-sm btn-outline-warning me-1" onclick="editTeamMember('4')">Edit</button>
-                                            <button class="btn btn-sm btn-outline-success" onclick="rateTeamMember('4')">Rate</button>
+                                            <button type='button'class="btn btn-sm btn-outline-primary me-1" onclick="viewTeamMember('4')">View</button>
+                                            <button type='reset'class="btn btn-sm btn-outline-warning me-1" onclick="editTeamMember('4')">Edit</button>
+                                            <button type='submit'class="btn btn-sm btn-outline-success" onclick="rateTeamMember('4')">Rate</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -912,7 +917,7 @@
                                 <div class="d-flex align-items-center">
                                     <img src="https://via.placeholder.com/35x35" class="rounded-circle me-2" alt="User">
                                     <div>
-                                        <div class="fw-bold small">Emma Wilson</div>
+                                        {{-- <div class="fw-bold small">{{ Auth::user()->developer->name }}</div> --}}
                                         <div class="stars-rating">
                                             <i class="fas fa-star text-warning small"></i>
                                             <i class="fas fa-star text-warning small"></i>
@@ -929,7 +934,7 @@
                                 <div class="d-flex align-items-center">
                                     <img src="https://via.placeholder.com/35x35" class="rounded-circle me-2" alt="User">
                                     <div>
-                                        <div class="fw-bold small">Mike Chen</div>
+                                        {{-- <div class="fw-bold small">{{ Auth::user()->developer->name }}</div> --}}
                                         <div class="stars-rating">
                                             <i class="fas fa-star text-warning small"></i>
                                             <i class="fas fa-star text-warning small"></i>
@@ -946,7 +951,7 @@
                                 <div class="d-flex align-items-center">
                                     <img src="https://via.placeholder.com/35x35" class="rounded-circle me-2" alt="User">
                                     <div>
-                                        <div class="fw-bold small">Sarah Johnson</div>
+                                        {{-- <div class="fw-bold small">{{ Auth::user()->developer->name }}</div> --}}
                                         <div class="stars-rating">
                                             <i class="fas fa-star text-warning small"></i>
                                             <i class="fas fa-star text-warning small"></i>
@@ -963,7 +968,7 @@
                                 <div class="d-flex align-items-center">
                                     <img src="https://via.placeholder.com/35x35" class="rounded-circle me-2" alt="User">
                                     <div>
-                                        <div class="fw-bold small">John Doe</div>
+                                        {{-- <div class="fw-bold small">{{ Auth::user()->developer->name }}</div> --}}
                                         <div class="stars-rating">
                                             <i class="fas fa-star text-warning small"></i>
                                             <i class="fas fa-star text-warning small"></i>
@@ -1136,7 +1141,7 @@
                     <div class="chat-container mb-3">
                         <div id="chatMessages">
                             <div class="chat-message received">
-                                <strong>Sarah Johnson</strong> <small class="text-muted">10:30 AM</small>
+                                <strong>{{ Auth::user()->name }}</strong> <small class="text-muted">10:30 AM</small>
                                 <div>Good morning everyone! Ready for today's sprint review?</div>
                             </div>
                             <div class="chat-message sent">
@@ -1144,11 +1149,11 @@
                                 <div>Morning Sarah! Yes, looking forward to seeing the progress on the payment module.</div>
                             </div>
                             <div class="chat-message received">
-                                <strong>Mike Chen</strong> <small class="text-muted">10:35 AM</small>
+                                {{-- <strong>{{ $teamMembers[Auth::user()->developer->name] }}</strong> <small class="text-muted">10:35 AM</small> --}}
                                 <div>I've finished the API endpoints for user authentication. Ready for testing!</div>
                             </div>
                             <div class="chat-message received">
-                                <strong>John Doe</strong> <small class="text-muted">10:40 AM</small>
+                                {{-- <strong>{{ $teamMembers[Auth::user()->developer->name] }}</strong> <small class="text-muted">10:40 AM</small> --}}
                                 <div>Great work Mike! I'll start integration testing this afternoon.</div>
                             </div>
                             <div class="chat-message sent">
@@ -1175,41 +1180,41 @@
                                     <img src="https://via.placeholder.com/30x30" class="rounded-circle" alt="User">
                                     <span class="position-absolute bottom-0 end-0 bg-success rounded-circle" style="width: 8px; height: 8px;"></span>
                                 </div>
-                                <small>Sarah Johnson</small>
+                                {{-- <small>{{ Auth::user()->developer->name }}</small> --}}
                             </div>
                             <div class="d-flex align-items-center mb-2">
                                 <div class="position-relative me-2">
                                     <img src="https://via.placeholder.com/30x30" class="rounded-circle" alt="User">
                                     <span class="position-absolute bottom-0 end-0 bg-success rounded-circle" style="width: 8px; height: 8px;"></span>
                                 </div>
-                                <small>Mike Chen</small>
+                                {{-- <small>{{ Auth::user()->developer->name }}</small> --}}
                             </div>
                             <div class="d-flex align-items-center mb-2">
                                 <div class="position-relative me-2">
                                     <img src="https://via.placeholder.com/30x30" class="rounded-circle" alt="User">
                                     <span class="position-absolute bottom-0 end-0 bg-warning rounded-circle" style="width: 8px; height: 8px;"></span>
                                 </div>
-                                <small>John Doe (Away)</small>
+                                {{-- <small>{{ Auth::user()->developer->name }} (Away)</small> --}}
                             </div>
                             <div class="d-flex align-items-center mb-2">
                                 <div class="position-relative me-2">
                                     <img src="https://via.placeholder.com/30x30" class="rounded-circle" alt="User">
                                     <span class="position-absolute bottom-0 end-0 bg-success rounded-circle" style="width: 8px; height: 8px;"></span>
                                 </div>
-                                <small>Emma Wilson</small>
+                                {{-- <small>{{ Auth::user()->developer->name }}</small> --}}
                             </div>
                         </div>
                     </div>
 
                     <div class="stat-card mt-3">
                         <h6 class="mb-3">Quick Actions</h6>
-                        <button class="btn btn-outline-primary btn-sm w-100 mb-2">
+                        <button type='button' class="btn btn-outline-primary btn-sm w-100 mb-2">
                             <i class="fas fa-video me-2"></i>Start Video Call
                         </button>
-                        <button class="btn btn-outline-success btn-sm w-100 mb-2">
+                        <button type='button' class="btn btn-outline-success btn-sm w-100 mb-2">
                             <i class="fas fa-share-alt me-2"></i>Share Screen
                         </button>
-                        <button class="btn btn-outline-info btn-sm w-100">
+                        <button type='button' class="btn btn-outline-info btn-sm w-100">
                             <i class="fas fa-file-alt me-2"></i>Share Files
                         </button>
                     </div>
@@ -1366,30 +1371,32 @@
                 <div class="col-lg-8">
                     <div class="stat-card mb-4">
                         <h5 class="mb-3">Profile Settings</h5>
-                        <form>
+                        <form action="{{ route('project_manager.update') }}" method="POST">
+                            @csrf
+                            @method('PUT')
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label class="form-label">First Name</label>
-                                        <input type="text" class="form-control" value="Alex">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" name="name" value="{{Auth::user()->name}}">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label">Last Name</label>
                                         <input type="text" class="form-control" value="Rodriguez">
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Email Address</label>
-                                <input type="email" class="form-control" value="alex@company.com">
+                                <input type="email" name="email" class="form-control" value="{{Auth::user()->email}}">
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label">Phone Number</label>
-                                        <input type="tel" class="form-control" value="+1 (555) 123-4567">
+                                        <input type="tel" name="phone" class="form-control" value="+1 (555) 123-4567">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -1434,7 +1441,7 @@
                                 Weekly Progress Reports
                             </label>
                         </div>
-                        <button class="btn btn-yellow">Save Preferences</button>
+                        <button type="submit" class="btn btn-yellow">Save Preferences</button>
                     </div>
 
                     <div class="stat-card">
@@ -1513,18 +1520,19 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="createProjectForm">
+                    <form id="createProjectForm" action="{{ route('projects.store') }}" method="POST">
+                        @csrf
                         <div class="row">
                             <div class="col-md-8">
                                 <div class="mb-3">
-                                    <label class="form-label">Project Name *</label>
-                                    <input type="text" class="form-control" required>
+                                    <label class="form-label">Project Name </label>
+                                    <input type="text" name="name" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label">Priority</label>
-                                    <select class="form-select">
+                                    <select name="priority" class="form-select">
                                         <option value="high">High</option>
                                         <option value="medium" selected>Medium</option>
                                         <option value="low">Low</option>
@@ -1535,48 +1543,55 @@
                         
                         <div class="mb-3">
                             <label class="form-label">Description</label>
-                            <textarea class="form-control" rows="3"></textarea>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Start Date</label>
-                                    <input type="date" class="form-control">
+                                    <input type="date"  name="start_date" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">End Date</label>
-                                    <input type="date" class="form-control">
+                                    <input type="date"  name="end_date" class="form-control">
                                 </div>
                             </div>
                         </div>
                         
                         <div class="mb-3">
                             <label class="form-label">Assign Team Members</label>
-                            <select class="form-select" multiple>
-                                <option value="1">Sarah Johnson - Frontend Developer</option>
+                            <select name="team_members[]" class="form-select" multiple>
+                                {{-- <option value="1">Sarah Johnson - Frontend Developer</option>
                                 <option value="2">Mike Chen - Backend Developer</option>
                                 <option value="3">John Doe - Full Stack Developer</option>
-                                <option value="4">Emma Wilson - UI/UX Designer</option>
+                                <option value="4">Emma Wilson - UI/UX Designer</option> --}}
+                                @foreach ($developers as $dev)
+                                    <option value="{{ $dev->id }}">{{ $dev->name }} - {{ $dev->specialty }}</option>
+                                @endforeach
                             </select>
                             <small class="form-text text-muted">Hold Ctrl to select multiple members</small>
                         </div>
-                        
+                        <div class="mb-3">
+                            <label class="form-label">Invite Developers by Email</label>
+                            <input type="text" name="invite_emails" class="form-control" placeholder="Comma separated emails">
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">Budget (Optional)</label>
                             <div class="input-group">
                                 <span class="input-group-text">$</span>
-                                <input type="number" class="form-control">
+                                <input type="number" name="budget" class="form-control">
                             </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="submit" class="btn btn-yellow">Create Project</button>
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-yellow" onclick="createProject()">Create Project</button>
-                </div>
+               
             </div>
         </div>
     </div>
@@ -1590,72 +1605,108 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="createTaskForm">
-                        <div class="mb-3">
-                            <label class="form-label">Task Title *</label>
-                            <input type="text" class="form-control" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            <textarea class="form-control" rows="3"></textarea>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Project</label>
-                                    <select class="form-select" required>
-                                        <option value="">Select Project</option>
-                                        <option value="1">E-commerce Platform</option>
-                                        <option value="2">Mobile App</option>
-                                        <option value="3">API Integration</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Priority</label>
-                                    <select class="form-select">
-                                        <option value="high">High</option>
-                                        <option value="medium" selected>Medium</option>
-                                        <option value="low">Low</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Assign To</label>
-                                    <select class="form-select">
-                                        <option value="">Select Developer</option>
-                                        <option value="1">Sarah Johnson</option>
-                                        <option value="2">Mike Chen</option>
-                                        <option value="3">John Doe</option>
-                                        <option value="4">Emma Wilson</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Due Date</label>
-                                    <input type="date" class="form-control">
-                                </div>
+                <form id="createTaskForm" action="{{ route('tasks.store') }}" method="POST">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label class="form-label">Task Title</label>
+                        <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" required value="{{ old('title') }}">
+                        @error('title')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3">{{ old('description') }}</textarea>
+                        @error('description')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Priority</label>
+                        <select name="priority" class="form-select @error('priority') is-invalid @enderror" required>
+                            <option value="" disabled {{ old('priority') ? '' : 'selected' }}>Select Priority</option>
+                            <option value="urgent" {{ old('priority')=='urgent' ? 'selected' : '' }}>Urgent</option>
+                            <option value="high" {{ old('priority')=='high' ? 'selected' : '' }}>High</option>
+                            <option value="medium" {{ old('priority')=='medium' ? 'selected' : '' }}>Medium</option>
+                            <option value="low" {{ old('priority')=='low' ? 'selected' : '' }}>Low</option>
+                        </select>
+                        @error('priority')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Project</label>
+                                <select name="project_id" class="form-select @error('project_id') is-invalid @enderror" required>
+                                    <option value="" disabled {{ old('project_id') ? '' : 'selected' }}>Select Project</option>
+                                    @foreach($projects as $project)
+                                        <option value="{{ $project->id }}" {{ old('project_id')==$project->id ? 'selected' : '' }}>{{ $project->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('project_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Estimated Hours</label>
-                            <input type="number" class="form-control" min="1" max="100">
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Assign To</label>
+                                <select name="assigned_to" class="form-select @error('assigned_to') is-invalid @enderror">
+                                    <option value="" disabled {{ old('assigned_to') ? '' : 'selected' }}>Select Developer</option>
+                                    @foreach($developers as $dev)
+                                        <option value="{{ $dev->id }}" {{ old('assigned_to')==$dev->id ? 'selected' : '' }}>{{ $dev->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('assigned_to')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
-                    </form>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Due Date</label>
+                                <input type="date" name="due_date" class="form-control @error('due_date') is-invalid @enderror" value="{{ old('due_date') }}">
+                                @error('due_date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Estimated Hours</label>
+                                <input type="number" name="estimated_hours" class="form-control @error('estimated_hours') is-invalid @enderror" min="1" max="100" value="{{ old('estimated_hours') }}">
+                                @error('estimated_hours')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea name="notes" class="form-control @error('notes') is-invalid @enderror" rows="3">{{ old('notes') }}</textarea>
+                        @error('notes')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-yellow">Create Task</button>
+                    </div>
+                </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-yellow" onclick="createTask()">Create Task</button>
-                </div>
+               
             </div>
         </div>
     </div>
@@ -1669,25 +1720,26 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="inviteTeamForm">
+                    <form id="inviteTeamForm" action="#" method="POST">
+                        @csrf
                         <div class="mb-3">
-                            <label class="form-label">Email Address *</label>
+                            <label class="form-label">Email Address </label>
                             <input type="email" class="form-control" required>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">First Name *</label>
+                                    <label class="form-label">Full Name </label>
                                     <input type="text" class="form-control" required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Last Name *</label>
+                                    <label class="form-label">Last Name </label>
                                     <input type="text" class="form-control" required>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                         
                         <div class="mb-3">
@@ -1715,12 +1767,13 @@
                             <label class="form-label">Personal Message (Optional)</label>
                             <textarea class="form-control" rows="3" placeholder="Welcome to our team..."></textarea>
                         </div>
+                        <div class="modal-footer">
+                         <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                         <button type="submit" class="btn btn-yellow" onclick="inviteTeamMember()">Send Invitation</button>
+                        </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-yellow" onclick="inviteTeamMember()">Send Invitation</button>
-                </div>
+                
             </div>
         </div>
     </div>
@@ -1734,9 +1787,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="createEventForm">
+                    <form id="createEventForm" action="#" method="POST">
+                        @csrf
                         <div class="mb-3">
-                            <label class="form-label">Event Title *</label>
+                            <label class="form-label">Event Title </label>
                             <input type="text" class="form-control" required>
                         </div>
                         
@@ -1783,18 +1837,19 @@
                         <div class="mb-3">
                             <label class="form-label">Attendees</label>
                             <select class="form-select" multiple>
-                                <option value="1">Sarah Johnson</option>
+                                <option value="1">Sarah </option>
                                 <option value="2">Mike Chen</option>
-                                <option value="3">John Doe</option>
-                                <option value="4">Emma Wilson</option>
+                                <option value="3">Jay Mike</option>
+                                <option value="4">Emmanuel Wilson</option>
                             </select>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="submit" class="btn btn-yellow" onclick="createEvent()">Create Event</button>
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-yellow" onclick="createEvent()">Create Event</button>
-                </div>
+                
             </div>
         </div>
     </div>
@@ -1813,8 +1868,9 @@
                         <h5 id="rateUserName">Team Member Name</h5>
                         <p class="text-muted" id="rateUserRole">Role</p>
                     </div>
-                    
-                    <form id="rateTeamMemberForm">
+
+                    <form id="rateTeamMemberForm" action="#" method="POST">
+                        @csrf
                         <input type="hidden" id="rateMemberId">
                         
                         <div class="mb-3">
@@ -1899,12 +1955,13 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                         <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                         <button type="submit" class="btn btn-yellow" onclick="submitRating()">Submit Rating</button>
+                        </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-yellow" onclick="submitRating()">Submit Rating</button>
-                </div>
+               
             </div>
         </div>
     </div>
@@ -2126,10 +2183,10 @@
             console.log('Creating project:', Object.fromEntries(formData));
             
             // Close modal and show success message
-            const modal = bootstrap.Modal.getInstance(document.getElementById('createProjectModal'));
-            modal.hide();
+            // const modal = bootstrap.Modal.getInstance(document.getElementById('createProjectModal'));
+            // modal.hide();
             
-            showNotification('Project created successfully!', 'success');
+            // showNotification('Project created successfully!', 'success');
         }
 
         function editProject(projectId) {
@@ -2148,19 +2205,6 @@
                 console.log('Deleting project:', projectId);
                 showNotification('Project deleted successfully!', 'success');
             }
-        }
-
-        // Task management functions
-        function createTask() {
-            const form = document.getElementById('createTaskForm');
-            const formData = new FormData(form);
-            
-            console.log('Creating task:', Object.fromEntries(formData));
-            
-            const modal = bootstrap.Modal.getInstance(document.getElementById('createTaskModal'));
-            modal.hide();
-            
-            showNotification('Task created successfully!', 'success');
         }
 
         // Team management functions

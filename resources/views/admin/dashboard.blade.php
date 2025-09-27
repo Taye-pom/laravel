@@ -51,6 +51,11 @@
             color: var(--dark-bg) !important;
             text-shadow: none;
         }
+        .navbar-brand img {
+            height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
 
         .navbar-nav .nav-link {
             color: var(--dark-bg) !important;
@@ -488,11 +493,10 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="#" onclick="showPage('dashboard')">
-                <i class="fas fa-shield-alt"></i> DevCollab Admin
+               <img src="{{ asset('project/origin.png') }}" alt="Yachad Logo"></i> Collab Admin
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -583,7 +587,7 @@
                 </div>
                 <div class="stats-card">
                     <i class="fas fa-tasks stats-icon"></i>
-                    <div class="stats-number" id="completedTasks">342</div>
+                    <div class="stats-number" id="completedTasks">{{ $stats['completedTasks'] ?? 0 }}</div>
                     <div class="stats-label">Completed Tasks</div>
                 </div>
             </div>
@@ -790,105 +794,41 @@
             </div>
 
             <div class="row" id="projectsGrid">
-                <div class="col-md-4 mb-3">
-                    <div class="content-card h-100">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h5 class="card-title">E-Commerce Platform</h5>
-                            <span class="badge bg-success">Active</span>
-                        </div>
-                        <p class="text-muted">Full-stack web application for online retail business with payment integration.</p>
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span>Progress</span>
-                                <span>75%</span>
+                @foreach($projects as $project)
+                    <div class="col-md-4 mb-3">
+                        <div class="content-card h-100 overflow-hidden">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title">{{ $project->name }}</h5>
+                                <span class="badge bg-success">{{ $project->status }}</span>
                             </div>
-                            <div class="progress" style="height: 8px;">
-                                <div class="progress-bar" style="width: 75%; background: var(--yellow-gradient);"></div>
+                            <p class="text-muted">{{ $project->description }}</p>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Progress</span>
+                                    <span>75%</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar" style="width: 75%; background: var(--yellow-gradient);"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="d-flex justify-content-between text-muted mb-3">
-                            <small><i class="fas fa-calendar"></i> Due: Dec 30, 2024</small>
-                            <small><i class="fas fa-users"></i> 5 Developers</small>
-                        </div>
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-outline-yellow" onclick="viewProject(1)">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                            <button class="btn btn-sm btn-outline-yellow" onclick="editProject(1)">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteProject(1)">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
+                            <div class="d-flex justify-content-between text-muted mb-3">
+                                <small><i class="fas fa-calendar"></i> {{ $project->due_date }}</small>
+                                <small><i class="fas fa-users"></i> 5 Developers</small>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-outline-yellow" onclick="viewProject(1)">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="btn btn-sm btn-outline-yellow" onclick="editProject(1)">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteProject(1)">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="content-card h-100">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h5 class="card-title">Mobile Banking App</h5>
-                            <span class="badge bg-warning">In Progress</span>
-                        </div>
-                        <p class="text-muted">Secure mobile application for banking services with biometric authentication.</p>
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span>Progress</span>
-                                <span>45%</span>
-                            </div>
-                            <div class="progress" style="height: 8px;">
-                                <div class="progress-bar bg-warning" style="width: 45%;"></div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between text-muted mb-3">
-                            <small><i class="fas fa-calendar"></i> Due: Jan 15, 2025</small>
-                            <small><i class="fas fa-users"></i> 3 Developers</small>
-                        </div>
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-outline-yellow" onclick="viewProject(2)">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                            <button class="btn btn-sm btn-outline-yellow" onclick="editProject(2)">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteProject(2)">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="content-card h-100">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h5 class="card-title">CRM System</h5>
-                            <span class="badge bg-secondary">Completed</span>
-                        </div>
-                        <p class="text-muted">Customer relationship management system with advanced analytics.</p>
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span>Progress</span>
-                                <span>100%</span>
-                            </div>
-                            <div class="progress" style="height: 8px;">
-                                <div class="progress-bar bg-success" style="width: 100%;"></div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between text-muted mb-3">
-                            <small><i class="fas fa-calendar"></i> Completed: Nov 20, 2024</small>
-                            <small><i class="fas fa-users"></i> 4 Developers</small>
-                        </div>
-                        <div class="action-buttons">
-                            <button class="btn btn-sm btn-outline-yellow" onclick="viewProject(3)">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                            <button class="btn btn-sm btn-outline-yellow" onclick="editProject(3)">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteProject(3)">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
 
@@ -1679,12 +1619,12 @@
         function updateStats() {
             // Simulate real-time updates
             setInterval(() => {
-                const stats = {
-                    totalUsers: Math.floor(Math.random() * 10) + 150,
-                    activeProjects: Math.floor(Math.random() * 5) + 20,
-                    totalDevelopers: Math.floor(Math.random() * 8) + 85,
-                    completedTasks: Math.floor(Math.random() * 20) + 340
-                };
+                // const stats = {
+                //     totalUsers: Math.floor(Math.random() * 10) + 150,
+                //     activeProjects: Math.floor(Math.random() * 5) + 20,
+                //     totalDevelopers: Math.floor(Math.random() * 8) + 85,
+                //     completedTasks: Math.floor(Math.random() * 20) + 340
+                // };
 
                 Object.keys(stats).forEach(key => {
                     const element = document.getElementById(key);

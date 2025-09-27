@@ -73,19 +73,25 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/developers', [AdminDeveloperController::class, 'index'])->name('admin.developers.index');
     Route::get('/admin/reports', [AdminReportController::class, 'index'])->name('admin.reports.index');
 });
-
-// Developer Dashboard
+//developer Dashboard
 Route::middleware(['auth', 'role:developer'])->prefix('developer')->group(function () {
     Route::get('/dashboard', [DeveloperController::class, 'index'])->name('developer.dashboard');
     Route::put('/profile', [DeveloperController::class, 'update'])->name('developer.update');
     Route::get('/tasks', \App\Livewire\TaskManagement::class)->name('developer.tasks');
+
+    // ✅ Corrigé : route vers TaskController
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+
     Route::get('/profile', \App\Livewire\DeveloperProfile::class)->name('developer.profile');
     Route::get('/time-tracking', \App\Livewire\TimeTracking::class)->name('developer.time-tracking');
     Route::get('/reports', \App\Livewire\Reports::class)->name('developer.reports');
 });
-
 // Project manager Dashboard
 Route::middleware(['auth', 'role:project_manager'])->get('/project_manager/dashboard', [ProjectManagerController::class, 'index'])->name('project_manager.dashboard');
+Route::put('/project_manager/profile', [ProjectManagerController::class, 'update'])->name('project_manager.update');
+// Route::resource('projects', ProjectController::class);
+Route::post('projects', [ProjectManagerController::class, 'store'])->name('projects.store')->middleware(['auth', 'role:project_manager']);
+
 
 // User Dashboard (basic placeholder)
 Route::middleware(['auth', 'role:user'])->get('/user/dashboard', function () {
@@ -101,5 +107,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/my-tasks', [TaskController::class, 'myTasks'])->name('tasks.my');
     Route::get('/notifications', \App\Livewire\Notifications::class)->name('notifications');
 });
+
+
 
 require __DIR__.'/auth.php';

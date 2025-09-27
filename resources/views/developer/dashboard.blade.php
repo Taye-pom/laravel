@@ -32,6 +32,11 @@
             font-size: 1.5rem;
             color: var(--text-dark) !important;
         }
+        .navbar-brand img {
+            height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
 
         .nav-link {
             color: var(--text-dark) !important;
@@ -266,14 +271,15 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{route('developer.dashboard')}}"><i class="fas fa-code"></i> DevCollab</a>
+            <a class="navbar-brand" href="{{route('developer.dashboard')}}"> <img src="{{ asset('project/origin.png') }}" alt="Yachad Logo">DevCollab</a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <h4 class="mb-0 ms-3 d-inline">Welcome back, {{ Auth::user()->name }}!</h4>
             
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                {{-- <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link active" href="#dashboard" onclick="showSection('dashboard')">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
@@ -295,7 +301,7 @@
                             <span class="notification-badge">3</span>
                         </a>
                     </li>
-                </ul>
+                </ul> --}}
                 
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
@@ -570,7 +576,7 @@
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <small class="text-muted">Due: Jan 30, 2025</small>
-                                            <button class="btn btn-warning btn-sm">View Details</button>
+                                            <button type='button'class="btn btn-warning btn-sm">View Details</button>
                                         </div>
                                     </div>
                                 </div>
@@ -596,7 +602,7 @@
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <small class="text-muted">Due: Oct 25, 2024</small>
-                                            <button class="btn btn-warning btn-sm">View Details</button>
+                                            <button type='button' class="btn btn-warning btn-sm">View Details</button>
                                         </div>
                                     </div>
                                 </div>
@@ -604,94 +610,7 @@
                         </div>
                     </div>
 
-                    <!-- Tasks Section -->
-                    <div id="tasks" class="section">
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h2 class="mb-4"><i class="fas fa-tasks"></i> Task Management</h2>
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <button class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#createTaskModal">
-                                            <i class="fas fa-plus"></i> Create Task
-                                        </button>
-                                        <div class="btn-group">
-                                            <button class="btn btn-outline-secondary active" onclick="filterTasks('all')">All</button>
-                                            <button class="btn btn-outline-secondary" onclick="filterTasks('todo')">To Do</button>
-                                            <button class="btn btn-outline-secondary" onclick="filterTasks('inprogress')">In Progress</button>
-                                            <button class="btn btn-outline-secondary" onclick="filterTasks('done')">Done</button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search tasks..." id="taskSearch">
-                                            <button class="btn btn-warning"><i class="fas fa-search"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Task</th>
-                                                        <th>Project</th>
-                                                        <th>Priority</th>
-                                                        <th>Status</th>
-                                                        <th>Due Date</th>
-                                                        <th>Progress</th>
-                                                        <th>Actions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="tasksTableBody">
-                                                    @forelse($projects as $project)
-                                                    <tr>
-                                                        <td>
-                                                            <h6 class="mb-1">{{ $project->name }}</h6>
-                                                            <small class="text-muted">{{ \Illuminate\Support\Str::limit($project->description, 80) }}</small>
-                                                        </td>
-                                                        <td>{{ $project->name }}</td>
-                                                        <td>
-                                                            @php($pri = $project->priority ?? 'medium')
-                                                            <span class="badge {{ $pri === 'high' ? 'badge-priority-high' : ($pri === 'low' ? 'badge-priority-low' : 'badge-priority-medium') }}">{{ ucfirst($pri) }}</span>
-                                                        </td>
-                                                        <td>
-                                                            @php($st = $project->status)
-                                                            <span class="badge {{ $st === 'active' ? 'bg-warning' : ($st === 'completed' ? 'bg-success' : ($st === 'on-hold' ? 'bg-secondary' : 'bg-info') ) }}">{{ ucfirst($st) }}</span>
-                                                        </td>
-                                                        <td>{{ optional($project->end_date)->format('M d, Y') ?? '-' }}</td>
-                                                        <td>
-                                                            <div class="progress-custom">
-                                                                <div class="progress-bar" style="width: {{ (int)($project->progress ?? 0) }}%"></div>
-                                                            </div>
-                                                            <small>{{ (int)($project->progress ?? 0) }}%</small>
-                                                        </td>
-                                                        <td>
-                                                            <div class="btn-group btn-group-sm">
-                                                                <button class="btn btn-outline-secondary" disabled>
-                                                                    <i class="fas fa-eye"></i>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    @empty
-                                                    <tr>
-                                                        <td colspan="7" class="text-center text-muted">No projects to display</td>
-                                                    </tr>
-                                                    @endforelse
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+             
 
                     <!-- Chat Section -->
                     <div id="chat" class="section">
