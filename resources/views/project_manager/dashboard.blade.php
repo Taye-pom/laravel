@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevCollab - Project Manager Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs
+    /font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link rel="shortcut icon" href="project/logo.png" type="image/x-icon">
     <style>
@@ -315,13 +316,21 @@
 
         <!-- Dashboard Section -->
         <div class="page-section active" id="dashboard">
+            <div id="dashboardPage" class="page-section active">
+            @if (session('status'))
+                <div class="alert alert-success">{{ session('status') }}</div>
+            @endif
+            @if ($errors->any())
+                <div class="alert alert-danger">{{ $errors->first() }}</div>
+            @endif
             <div class="row">
                 <div class="col-lg-3 col-md-6">
                     <div class="stat-card animate__animated animate__fadeInUp">
                         <div class="d-flex justify-content-between">
                             <div>
-                                <h6 class="text-muted">Active Projects</h6>
-                                <div class="stat-number">12</div>
+                                <i class="fas fa-project-diagram stats-icon"></i>
+                                <h6 class="stats-label">Active Projects</h6>
+                                <div class="stat-number" id="activeProjects">{{ $stats['activeProjects'] ?? 0 }}</div>
                             </div>
                             <i class="fas fa-project-diagram fa-2x text-warning"></i>
                         </div>
@@ -332,7 +341,7 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <h6 class="text-muted">Total Tasks</h6>
-                                <div class="stat-number">148</div>
+                                <div class="stat-number">{{ $stats['totalTasks'] ?? 0 }}</div>
                             </div>
                             <i class="fas fa-tasks fa-2x text-warning"></i>
                         </div>
@@ -343,7 +352,7 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <h6 class="text-muted">Team Members</h6>
-                                <div class="stat-number">24</div>
+                                <div class="stat-number">{{ $stats['teamMembers'] ?? 0 }}</div>
                             </div>
                             <i class="fas fa-users fa-2x text-warning"></i>
                         </div>
@@ -354,7 +363,7 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <h6 class="text-muted">Completion Rate</h6>
-                                <div class="stat-number">78%</div>
+                                <div class="stat-number">{{ $stats['completionRate'] ?? 0 }}%</div>
                             </div>
                             <i class="fas fa-chart-line fa-2x text-warning"></i>
                         </div>
@@ -446,44 +455,45 @@
                 </button>
             </div>
 
-            <div class="row">
+            <div class="row" id="projectsGrid">
+                 @forelse($projects as $project)
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="stat-card">
                         <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h5>E-commerce Platform</h5>
+                            <h5>{{ $project->name }}</h5>
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
                                     <i class="fas fa-ellipsis-v"></i>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#" onclick="editProject('1')">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="viewProject('1')">View Details</a></li>
-                                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteProject('1')">Delete</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="editProject('{{ $project->id }}')">Edit</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="viewProject('{{ $project->id }}')">View Details</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteProject('{{ $project->id }}')">Delete</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <p class="text-muted">Full-stack e-commerce solution with modern UI/UX</p>
+                        <p class="text-muted">{{ $project->description }}</p>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <small>Progress</small>
-                                <small>85%</small>
+                                <small>{{ $project->progress }}%</small>
                             </div>
                             <div class="progress progress-modern">
-                                <div class="progress-bar progress-bar-yellow" style="width: 85%"></div>
+                                <div class="progress-bar progress-bar-yellow" style="width: {{ $project->progress }}%"></div>
                             </div>
                         </div>
                         <div class="row text-center">
                             <div class="col-4">
                                 <small class="text-muted">Tasks</small>
-                                <div class="fw-bold">24/28</div>
+                                <div class="fw-bold">{{ $project->tasks_completed }}/{{ $project->tasks_total }}</div>
                             </div>
                             <div class="col-4">
                                 <small class="text-muted">Team</small>
-                                <div class="fw-bold">6</div>
+                                <div class="fw-bold">{{ $project->team_members_count }}</div>
                             </div>
                             <div class="col-4">
                                 <small class="text-muted">Days Left</small>
-                                <div class="fw-bold">12</div>
+                                <div class="fw-bold">{{ $project->days_left }}</div>
                             </div>
                         </div>
                     </div>
@@ -492,40 +502,40 @@
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="stat-card">
                         <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h5>Mobile App</h5>
+                            <h5>{{ $project->name }}</h5>
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
                                     <i class="fas fa-ellipsis-v"></i>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#" onclick="editProject('2')">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="viewProject('2')">View Details</a></li>
-                                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteProject('2')">Delete</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="editProject('{{ $project->id }}')">Edit</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="viewProject('{{ $project->id }}')">View Details</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteProject('{{ $project->id }}')">Delete</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <p class="text-muted">React Native mobile application</p>
+                        <p class="text-muted">{{ $project->description }}</p>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <small>Progress</small>
-                                <small>60%</small>
+                                <small>{{ $project->progress }}%</small>
                             </div>
                             <div class="progress progress-modern">
-                                <div class="progress-bar progress-bar-yellow" style="width: 60%"></div>
+                                <div class="progress-bar progress-bar-yellow" style="width: {{ $project->progress }}%"></div>
                             </div>
                         </div>
                         <div class="row text-center">
                             <div class="col-4">
                                 <small class="text-muted">Tasks</small>
-                                <div class="fw-bold">15/25</div>
+                                <div class="fw-bold">{{ $project->tasks_completed }}/{{ $project->tasks_total }}</div>
                             </div>
                             <div class="col-4">
                                 <small class="text-muted">Team</small>
-                                <div class="fw-bold">4</div>
+                                <div class="fw-bold">{{ $project->team_members_count }}</div>
                             </div>
                             <div class="col-4">
                                 <small class="text-muted">Days Left</small>
-                                <div class="fw-bold">45</div>
+                                <div class="fw-bold">{{ $project->days_left }}</div>
                             </div>
                         </div>
                     </div>
@@ -534,44 +544,47 @@
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="stat-card">
                         <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h5>API Integration</h5>
+                            <h5>{{ $project->name }}</h5>
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
                                     <i class="fas fa-ellipsis-v"></i>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#" onclick="editProject('3')">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="viewProject('3')">View Details</a></li>
-                                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteProject('3')">Delete</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="editProject('{{ $project->id }}')">Edit</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="viewProject('{{ $project->id }}')">View Details</a></li>
+                                    <li><a class="dropdown-item text-danger" href="#" onclick="deleteProject('{{ $project->id }}')">Delete</a></li>
                                 </ul>
                             </div>
                         </div>
-                        <p class="text-muted">REST API development and integration</p>
+                        <p class="text-muted">{{ $project->description }}</p>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <small>Progress</small>
-                                <small>95%</small>
+                                <small>{{ $project->progress }}%</small>
                             </div>
                             <div class="progress progress-modern">
-                                <div class="progress-bar progress-bar-yellow" style="width: 95%"></div>
+                                <div class="progress-bar progress-bar-yellow" style="width: {{ $project->progress }}%"></div>
                             </div>
                         </div>
                         <div class="row text-center">
                             <div class="col-4">
                                 <small class="text-muted">Tasks</small>
-                                <div class="fw-bold">18/19</div>
+                                <div class="fw-bold">{{ $project->tasks_completed }}/{{ $project->tasks_total }}</div>
                             </div>
                             <div class="col-4">
                                 <small class="text-muted">Team</small>
-                                <div class="fw-bold">3</div>
+                                <div class="fw-bold">{{ $project->team_members_count }}</div>
                             </div>
                             <div class="col-4">
                                 <small class="text-muted">Days Left</small>
-                                <div class="fw-bold">5</div>
+                                <div class="fw-bold">{{ $project->days_left }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
+                @empty
+                <p class="text-muted">No projects found.</p>
+                @endforelse
             </div>
         </div>
 

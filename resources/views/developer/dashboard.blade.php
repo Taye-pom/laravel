@@ -349,7 +349,7 @@
                     <div class="sidebar-item" onclick="showSection('chat')">
                         <i class="fas fa-message"></i>
                         <span>Team Chat</span>
-                        <span class="notification-badge">3</span>
+                        {{-- <span class="notification-badge">3</span> --}}
                     </div>
                     <div class="sidebar-item" onclick="showSection('codeReview')">
                         <i class="fas fa-code-branch"></i>
@@ -1116,9 +1116,9 @@
                                 <div class="card mb-4">
                                     <div class="card-body text-center">
                                         <div class="avatar mx-auto mb-3" style="width: 100px; height: 100px; font-size: 2rem;">
-                                            JD
+                                            {{Auth::user()->name}}
                                         </div>
-                                        <h4>John Doe</h4>
+                                        <h4>{{Auth::user()->name}}</h4>
                                         <p class="text-muted">Full Stack Developer</p>
                                         <button class="btn btn-warning">Change Avatar</button>
                                     </div>
@@ -1160,23 +1160,23 @@
                                         <form id="profileForm">
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
-                                                    <label class="form-label">First Name</label>
-                                                    <input type="text" class="form-control" value="John" required>
+                                                    <label class="form-label">Full Name</label>
+                                                    <input type="text" class="form-control" value="{{Auth::user()->name}}" required>
                                                 </div>
-                                                <div class="col-md-6 mb-3">
+                                                {{-- <div class="col-md-6 mb-3">
                                                     <label class="form-label">Last Name</label>
                                                     <input type="text" class="form-control" value="Doe" required>
-                                                </div>
+                                                </div> --}}
                                             </div>
 
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
                                                     <label class="form-label">Email</label>
-                                                    <input type="email" class="form-control" value="john.doe@company.com" required>
+                                                    <input type="email" class="form-control" value="{{Auth::user()->email}}" required>
                                                 </div>
                                                 <div class="col-md-6 mb-3">
                                                     <label class="form-label">Phone</label>
-                                                    <input type="tel" class="form-control" value="+1 (555) 123-4567">
+                                                    <input type="tel" class="form-control" value="{{Auth::user()->phone}}">
                                                 </div>
                                             </div>
 
@@ -1204,11 +1204,11 @@
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
                                                     <label class="form-label">LinkedIn</label>
-                                                    <input type="url" class="form-control" placeholder="https://linkedin.com/in/johndoe">
+                                                    <input type="url"  name='linkedin' class="form-control" placeholder="https://linkedin.com/in/johndoe">
                                                 </div>
                                                 <div class="col-md-6 mb-3">
                                                     <label class="form-label">GitHub</label>
-                                                    <input type="url" class="form-control" placeholder="https://github.com/johndoe">
+                                                    <input type="url"  name='github' class="form-control" placeholder="https://github.com/johndoe">
                                                 </div>
                                             </div>
 
@@ -1553,7 +1553,7 @@
     </div>
 
     <!-- Create Project Modal -->
-    <div class="modal fade" id="createProjectModal" tabindex="-1">
+    {{-- <div class="modal fade" id="createProjectModal" tabindex="-1"> --}}
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
