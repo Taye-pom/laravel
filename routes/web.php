@@ -91,6 +91,8 @@ Route::middleware(['auth', 'role:project_manager'])->get('/project_manager/dashb
 Route::put('/project_manager/profile', [ProjectManagerController::class, 'update'])->name('project_manager.update');
 // Route::resource('projects', ProjectController::class);
 Route::post('projects', [ProjectManagerController::class, 'store'])->name('projects.store')->middleware(['auth', 'role:project_manager']);
+Route::get('/project_manager/projects', [ProjectManagerController::class, 'index'])->name('projects.index');
+
 
 
 // User Dashboard (basic placeholder)
