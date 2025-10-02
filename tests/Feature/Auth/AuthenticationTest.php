@@ -22,7 +22,7 @@ test('users can authenticate using the login screen', function () {
 
     $response
         ->assertHasNoErrors()
-        ->assertRedirect(route('dashboard', absolute: false));
+        ->assertRedirect(route('user.dashboard', absolute: false));
 
     $this->assertAuthenticated();
 });
@@ -42,6 +42,8 @@ test('users can not authenticate with invalid password', function () {
 
 test('users can logout', function () {
     $user = User::factory()->create();
+
+    $this->withoutMiddleware();
 
     $response = $this->actingAs($user)->post('/logout');
 
