@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevCollab - Project Manager Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs
-    /font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ asset('css/default-avatars.css') }}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link rel="shortcut icon" href="project/logo.png" type="image/x-icon">
     <style>
@@ -300,11 +300,13 @@
                 </div>
                 <div class="dropdown">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <img src="https://via.placeholder.com/28x28" class="rounded-circle" alt="Profile">
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white" style="width: 28px; height: 28px; font-size: 12px;">
+                            {{ substr(Auth::user()->name, 0, 1) }}
+                        </div>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                            <form action="{{ route('logout') }}" method="POST" class="px-3 py-1">
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                 @csrf
                                 <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
                             </form>
@@ -610,7 +612,7 @@
                             <p class="text-muted small">{{ $task->project->name ?? 'No Project' }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
+                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white me-1" style="width: 30px; height: 30px; font-size: 10px;">{{ substr($task->assignedTo->name ?? 'U', 0, 1) }}</div>
                                     <small>{{ $task->assignee->name ?? 'Unassigned' }}</small>
                                 </div>
                                 <small class="text-muted">Due: {{ $task->due_date ? $task->due_date->format('M d') : 'N/A' }}</small>
@@ -636,7 +638,7 @@
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
+                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white me-1" style="width: 30px; height: 30px; font-size: 10px;">{{ substr($task->assignedTo->name ?? 'U', 0, 1) }}</div>
                                     <small>{{ $task->assignee->name ?? 'Unassigned' }}</small>
                                 </div>
                                 <small class="text-muted">Ongoing</small>
@@ -658,7 +660,7 @@
                             <p class="text-muted small">{{ $task->project->name ?? 'No Project' }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
+                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white me-1" style="width: 30px; height: 30px; font-size: 10px;">{{ substr($task->assignedTo->name ?? 'U', 0, 1) }}</div>
                                     <small>{{ $task->assignee->name ?? 'Unassigned' }}</small>
                                 </div>
                                 <small class="text-success">Completed</small>
@@ -682,7 +684,9 @@
                         <p class="text-muted small">Mobile App</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
+                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white me-1" style="width: 30px; height: 30px; font-size: 12px;">
+                                        {{ substr($task->assignedTo->name ?? 'U', 0, 1) }}
+                                    </div>
                                 {{-- <small>{{ Auth::user()->developer->name }}</small> --}}
                             </div>
                             <small class="text-muted">Due: Nov 25</small>
@@ -703,7 +707,9 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
+                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white me-1" style="width: 30px; height: 30px; font-size: 12px;">
+                                        {{ substr($task->assignedTo->name ?? 'U', 0, 1) }}
+                                    </div>
                                 {{-- <small>{{ Auth::user()->developer->name }}</small> --}}
                             </div>
                             <small class="text-muted">30% Complete</small>
@@ -721,7 +727,9 @@
                         <p class="text-muted small">E-commerce Platform</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <img src="https://via.placeholder.com/30x30" class="rounded-circle me-1" alt="User">
+                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white me-1" style="width: 30px; height: 30px; font-size: 12px;">
+                                        {{ substr($task->assignedTo->name ?? 'U', 0, 1) }}
+                                    </div>
                                 <small>Alex Rodriguez</small>
                             </div>
                             <small class="text-success">Completed</small>
@@ -761,7 +769,7 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="https://via.placeholder.com/40x40" class="rounded-circle me-3" alt="User">
+                                                <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/40x40" class="rounded-circle me-3" alt="User">
                                                 <div>
                                                     {{-- <div class="fw-bold">{{ Auth::user()->developer->name }}</div> --}}
                                                     {{-- <small class="text-muted">{{ Auth::user()->developer->email }}</small> --}}
@@ -793,7 +801,7 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="https://via.placeholder.com/40x40" class="rounded-circle me-3" alt="User">
+                                                <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/40x40" class="rounded-circle me-3" alt="User">
                                                 <div>
                                                     {{-- <div class="fw-bold">{{ Auth::user()->developer->name }}</div> --}}
                                                     {{-- <small class="text-muted">{{ Auth::user()->developer->email }}</small> --}}
@@ -825,7 +833,7 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="https://via.placeholder.com/40x40" class="rounded-circle me-3" alt="User">
+                                                <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/40x40" class="rounded-circle me-3" alt="User">
                                                 <div>
                                                     {{-- <div class="fw-bold">{{ Auth::user()->developer->name }}</div> --}}
                                                     {{-- <small class="text-muted">{{ Auth::user()->developer->email }}</small> --}}
@@ -857,7 +865,7 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="https://via.placeholder.com/40x40" class="rounded-circle me-3" alt="User">
+                                                <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/40x40" class="rounded-circle me-3" alt="User">
                                                 <div>
                                                     {{-- <div class="fw-bold">{{ Auth::user()->developer->name }}</div> --}}
                                                     {{-- <small class="text-muted">{{ Auth::user()->developer->email }}</small> --}}
@@ -928,7 +936,7 @@
                         <div class="top-developers">
                             <div class="d-flex align-items-center justify-content-between mb-3 p-2 border rounded">
                                 <div class="d-flex align-items-center">
-                                    <img src="https://via.placeholder.com/35x35" class="rounded-circle me-2" alt="User">
+                                    <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/35x35" class="rounded-circle me-2" alt="User">
                                     <div>
                                         {{-- <div class="fw-bold small">{{ Auth::user()->developer->name }}</div> --}}
                                         <div class="stars-rating">
@@ -945,7 +953,7 @@
                             
                             <div class="d-flex align-items-center justify-content-between mb-3 p-2 border rounded">
                                 <div class="d-flex align-items-center">
-                                    <img src="https://via.placeholder.com/35x35" class="rounded-circle me-2" alt="User">
+                                    <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/35x35" class="rounded-circle me-2" alt="User">
                                     <div>
                                         {{-- <div class="fw-bold small">{{ Auth::user()->developer->name }}</div> --}}
                                         <div class="stars-rating">
@@ -962,7 +970,7 @@
                             
                             <div class="d-flex align-items-center justify-content-between mb-3 p-2 border rounded">
                                 <div class="d-flex align-items-center">
-                                    <img src="https://via.placeholder.com/35x35" class="rounded-circle me-2" alt="User">
+                                    <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/35x35" class="rounded-circle me-2" alt="User">
                                     <div>
                                         {{-- <div class="fw-bold small">{{ Auth::user()->developer->name }}</div> --}}
                                         <div class="stars-rating">
@@ -979,7 +987,7 @@
                             
                             <div class="d-flex align-items-center justify-content-between p-2 border rounded">
                                 <div class="d-flex align-items-center">
-                                    <img src="https://via.placeholder.com/35x35" class="rounded-circle me-2" alt="User">
+                                    <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/35x35" class="rounded-circle me-2" alt="User">
                                     <div>
                                         {{-- <div class="fw-bold small">{{ Auth::user()->developer->name }}</div> --}}
                                         <div class="stars-rating">
@@ -1190,28 +1198,28 @@
                         <div class="online-users">
                             <div class="d-flex align-items-center mb-2">
                                 <div class="position-relative me-2">
-                                    <img src="https://via.placeholder.com/30x30" class="rounded-circle" alt="User">
+                                    <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/30x30" class="rounded-circle" alt="User">
                                     <span class="position-absolute bottom-0 end-0 bg-success rounded-circle" style="width: 8px; height: 8px;"></span>
                                 </div>
                                 {{-- <small>{{ Auth::user()->developer->name }}</small> --}}
                             </div>
                             <div class="d-flex align-items-center mb-2">
                                 <div class="position-relative me-2">
-                                    <img src="https://via.placeholder.com/30x30" class="rounded-circle" alt="User">
+                                    <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/30x30" class="rounded-circle" alt="User">
                                     <span class="position-absolute bottom-0 end-0 bg-success rounded-circle" style="width: 8px; height: 8px;"></span>
                                 </div>
                                 {{-- <small>{{ Auth::user()->developer->name }}</small> --}}
                             </div>
                             <div class="d-flex align-items-center mb-2">
                                 <div class="position-relative me-2">
-                                    <img src="https://via.placeholder.com/30x30" class="rounded-circle" alt="User">
+                                    <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/30x30" class="rounded-circle" alt="User">
                                     <span class="position-absolute bottom-0 end-0 bg-warning rounded-circle" style="width: 8px; height: 8px;"></span>
                                 </div>
                                 {{-- <small>{{ Auth::user()->developer->name }} (Away)</small> --}}
                             </div>
                             <div class="d-flex align-items-center mb-2">
                                 <div class="position-relative me-2">
-                                    <img src="https://via.placeholder.com/30x30" class="rounded-circle" alt="User">
+                                    <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/30x30" class="rounded-circle" alt="User">
                                     <span class="position-absolute bottom-0 end-0 bg-success rounded-circle" style="width: 8px; height: 8px;"></span>
                                 </div>
                                 {{-- <small>{{ Auth::user()->developer->name }}</small> --}}
@@ -1474,7 +1482,7 @@
                     <div class="stat-card mb-3">
                         <h6 class="mb-3">Account Information</h6>
                         <div class="text-center mb-3">
-                            <img src="https://via.placeholder.com/80x80" class="rounded-circle mb-2" alt="Profile">
+                            <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/80x80" class="rounded-circle mb-2" alt="Profile">
                             <div>
                                 <strong>Alex Rodriguez</strong>
                                 <div class="text-muted small">Project Manager</div>
@@ -1877,7 +1885,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="text-center mb-4">
-                        <img src="https://via.placeholder.com/80x80" class="rounded-circle mb-3" alt="User" id="rateUserImage">
+                        <img src="https://data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM2Yzc1N2QiLz4KPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5EPC90ZXh0Pgo8L3N2Zz4K/80x80" class="rounded-circle mb-3" alt="User" id="rateUserImage">
                         <h5 id="rateUserName">Team Member Name</h5>
                         <p class="text-muted" id="rateUserRole">Role</p>
                     </div>
@@ -1990,7 +1998,9 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-4 text-center">
-                            <img src="https://via.placeholder.com/120x120" class="rounded-circle mb-3" alt="User" id="viewUserImage">
+                            <div class="rounded-circle bg-info d-flex align-items-center justify-content-center text-white mb-3" style="width: 120px; height: 120px; font-size: 48px;" id="viewUserImage">
+                                U
+                            </div>
                             <h5 id="viewUserName">Team Member Name</h5>
                             <p class="text-muted" id="viewUserRole">Role</p>
                             <div class="mb-3">
@@ -2478,5 +2488,9 @@
             }
         });
     </script>
+    <script src="{{ asset('js/dashboard-utils.js') }}"></script>
+</body>
+</html>ipt>
+    <script src="{{ asset('js/dashboard-utils.js') }}"></script>
 </body>
 </html>

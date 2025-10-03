@@ -116,6 +116,83 @@
             </div>
         </div>
     </div>
+
+    <!-- Edit Modal -->
+    @if($showEditModal)
+        <div class="modal fade show" style="display: block;" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modifier le profil</h5>
+                        <button type="button" class="btn-close" wire:click="closeModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form wire:submit.prevent="update">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Titre</label>
+                                    <input type="text" class="form-control" wire:model="title">
+                                    @error('title') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Niveau d'expérience</label>
+                                    <select class="form-select" wire:model="experience_level">
+                                        <option value="Junior">Junior</option>
+                                        <option value="Mid-Level">Mid-Level</option>
+                                        <option value="Senior">Senior</option>
+                                        <option value="Lead">Lead</option>
+                                    </select>
+                                    @error('experience_level') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Compétences (séparées par des virgules)</label>
+                                <textarea class="form-control" rows="3" wire:model="skills"></textarea>
+                                @error('skills') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Biographie</label>
+                                <textarea class="form-control" rows="4" wire:model="bio"></textarea>
+                                @error('bio') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">GitHub URL</label>
+                                    <input type="url" class="form-control" wire:model="github_url">
+                                    @error('github_url') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">LinkedIn URL</label>
+                                    <input type="url" class="form-control" wire:model="linkedin_url">
+                                    @error('linkedin_url') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Portfolio URL</label>
+                                    <input type="url" class="form-control" wire:model="portfolio_url">
+                                    @error('portfolio_url') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Avatar</label>
+                                <input type="file" class="form-control" wire:model="avatar" accept="image/*">
+                                @error('avatar') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" wire:click="closeModal">Annuler</button>
+                                <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    @endif
 </div>
 
 <style>

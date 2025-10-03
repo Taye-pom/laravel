@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Developer Dashboard - DevCollab</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('css/default-avatars.css') }}" rel="stylesheet">
     {{-- <link rel="stylesheet" href="public/bootstrap-5.3.8-dist.css"> --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     {{-- <link rel="stylesheet" href="public/fontawesome-free-7.0.0-web/css/all.css.css"> --}}
-    <link rel="shortcut icon" href="project/logo.png" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('project/logo.png') }}" type="image/x-icon">
     <style>
         :root {
             --primary-yellow: #ffc107;
@@ -317,7 +318,7 @@
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form action="{{ route('logout') }}" method="POST">
+                                <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                     @csrf
                                     <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</button>
                                 </form>
@@ -1609,201 +1610,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     
     <script>
-        // Global variables
-        let currentSection = 'dashboard';
-        let timerInterval;
-        let timerSeconds = 0;
-        let isTimerRunning = false;
-
-        // Navigation Functions
-        function showSection(sectionName) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(sectionName).classList.add('active');
-            
-            // Update navbar active state
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            document.querySelector(`[href="#${sectionName}"]`).classList.add('active');
-            
-            // Update sidebar active state
-            document.querySelectorAll('.sidebar-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            currentSection = sectionName;
-            
-            // Initialize charts when reports section is shown
-            if (sectionName === 'reports') {
-                initializeCharts();
+        // Safe event listener helper
+        function safeAddEventListener(elementId, event, handler) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.addEventListener(event, handler);
+            } else {
+                console.warn("Element with id '" + elementId + "' not found");
             }
         }
 
-        // Sidebar Functions
-        document.querySelectorAll('.sidebar-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        // Task Management Functions
-        function filterTasks(status) {
-            // Remove active class from all filter buttons
-            document.querySelectorAll('.btn-group .btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            // Add active class to clicked button
-            event.target.classList.add('active');
-            
-            // Filter logic would go here
-            console.log('Filtering tasks by:', status);
+        // Safe query selector helper
+        function safeQuerySelector(selector, handler) {
+            const element = document.querySelector(selector);
+            if (element) {
+                return handler(element);
+            } else {
+                console.warn("Element with selector '" + selector + "' not found");
+            }
         }
 
-        // Chat Functions
-        function selectChat(contactId) {
-            document.querySelectorAll('.chat-contact').forEach(contact => {
-                contact.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
-            
-            // Update chat header and messages based on contact
-            console.log('Selected chat:', contactId);
-        }
-
-        // Chat form submission
-        document.getElementById('chatForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const messageInput = document.getElementById('messageInput');
-            const message = messageInput.value.trim();
-            
-            if (message) {
-                // Add message to chat
-                const chatContainer = document.querySelector('.chat-container');
-                const messageDiv = document.createElement('div');
-                messageDiv.className = 'message message-sent';
-                messageDiv.innerHTML = `
-                    <small class="text-muted">You - ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
-                    <p class="mb-0">${message}</p>
-                `;
-                chatContainer.appendChild(messageDiv);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-                
-                messageInput.value = '';
-            }
-        });
-
-        // Timer Functions
-        document.getElementById('startTimer').addEventListener('click', function() {
-            if (!isTimerRunning) {
-                isTimerRunning = true;
-                document.getElementById('startTimer').style.display = 'none';
-                document.getElementById('stopTimer').style.display = 'inline-block';
-                document.getElementById('timerDisplay').style.display = 'block';
-                
-                timerInterval = setInterval(function() {
-                    timerSeconds++;
-                    updateTimerDisplay();
-                }, 1000);
-            }
-        });
-
-        document.getElementById('stopTimer').addEventListener('click', function() {
-            if (isTimerRunning) {
-                isTimerRunning = false;
-                clearInterval(timerInterval);
-                document.getElementById('startTimer').style.display = 'inline-block';
-                document.getElementById('stopTimer').style.display = 'none';
-                
-                // Auto-populate time tracking form
-                const now = new Date();
-                const startTime = new Date(now.getTime() - timerSeconds * 1000);
-                document.querySelector('input[type="time"]').value = startTime.toTimeString().slice(0, 5);
-                document.querySelectorAll('input[type="time"]')[1].value = now.toTimeString().slice(0, 5);
-            }
-        });
-
-        function updateTimerDisplay() {
-            const hours = Math.floor(timerSeconds / 3600);
-            const minutes = Math.floor((timerSeconds % 3600) / 60);
-            const seconds = timerSeconds % 60;
-            
-            const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            document.getElementById('timerTime').textContent = timeString;
-        }
-
-        // Form Submissions
-        document.getElementById('timeTrackingForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Reset timer
-            timerSeconds = 0;
-            isTimerRunning = false;
-            document.getElementById('startTimer').style.display = 'inline-block';
-            document.getElementById('stopTimer').style.display = 'none';
-            document.getElementById('timerDisplay').style.display = 'none';
-            
-            // Show success message
-            alert('Time logged successfully!');
-            this.reset();
-        });
-
-        document.getElementById('profileForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Profile updated successfully!');
-        });
-
-        document.getElementById('createTaskForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Task created successfully!');
-            bootstrap.Modal.getInstance(document.getElementById('createTaskModal')).hide();
-            this.reset();
-        });
-
-        document.getElementById('editTaskForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Task updated successfully!');
-            bootstrap.Modal.getInstance(document.getElementById('editTaskModal')).hide();
-        });
-
-        document.getElementById('requestReviewForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Code review requested successfully!');
-            bootstrap.Modal.getInstance(document.getElementById('requestReviewModal')).hide();
-            this.reset();
-        });
-
-        document.getElementById('createProjectForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Project created successfully!');
-            bootstrap.Modal.getInstance(document.getElementById('createProjectModal')).hide();
-            this.reset();
-        });
-
-        // Charts Initialization
+        // Initialize charts safely
         function initializeCharts() {
             // Productivity Chart
-            const productivityCtx = document.getElementById('productivityChart');
+            const productivityCtx = document.getElementById("productivityChart");
             if (productivityCtx) {
                 new Chart(productivityCtx, {
-                    type: 'line',
+                    type: "line",
                     data: {
-                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
                         datasets: [{
-                            label: 'Hours Worked',
-                            data: [8, 7.5, 8.5, 6, 9, 4, 2],
-                            borderColor: '#ffc107',
-                            backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                            label: "Tasks Completed",
+                            data: [3, 2, 4, 2, 5, 2, 1],
+                            borderColor: "#ffc107",
+                            backgroundColor: "rgba(255, 193, 7, 0.1)",
                             tension: 0.4
                         }, {
-                            label: 'Tasks Completed',
+                            label: "Tasks Completed",
                             data: [3, 2, 4, 2, 5, 2, 1],
-                            borderColor: '#28a745',
-                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                            borderColor: "#28a745",
+                            backgroundColor: "rgba(40, 167, 69, 0.1)",
                             tension: 0.4
                         }]
                     },
@@ -1820,15 +1666,15 @@
             }
 
             // Time Distribution Chart
-            const timeDistCtx = document.getElementById('timeDistributionChart');
+            const timeDistCtx = document.getElementById("timeDistributionChart");
             if (timeDistCtx) {
                 new Chart(timeDistCtx, {
-                    type: 'doughnut',
+                    type: "doughnut",
                     data: {
-                        labels: ['E-Commerce', 'Mobile App', 'API Gateway'],
+                        labels: ["E-Commerce", "Mobile App", "API Gateway"],
                         datasets: [{
                             data: [57, 27, 16],
-                            backgroundColor: ['#ffc107', '#28a745', '#17a2b8']
+                            backgroundColor: ["#ffc107", "#28a745", "#17a2b8"]
                         }]
                     },
                     options: {
@@ -1839,49 +1685,161 @@
             }
         }
 
-        // Search functionality
-        document.getElementById('taskSearch').addEventListener('input', function() {
+        // Safe event listeners
+        safeAddEventListener("taskSearch", "input", function() {
             const searchTerm = this.value.toLowerCase();
-            // Search logic would go here
-            console.log('Searching for:', searchTerm);
+            console.log("Searching for:", searchTerm);
+        });
+
+        safeAddEventListener("chatForm", "submit", function(e) {
+            e.preventDefault();
+            const messageInput = document.getElementById("messageInput");
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                const chatMessages = document.getElementById("chatMessages");
+                const messageElement = document.createElement("div");
+                messageElement.className = "message mb-2 p-2 bg-light rounded";
+                messageElement.innerHTML = `<strong>You:</strong> ${message}`;
+                chatMessages.appendChild(messageElement);
+                messageInput.value = "";
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+
+        safeAddEventListener("startTimer", "click", function() {
+            if (!isTimerRunning) {
+                isTimerRunning = true;
+                const startBtn = document.getElementById("startTimer");
+                const stopBtn = document.getElementById("stopTimer");
+                const timerDisplay = document.getElementById("timerDisplay");
+                
+                if (startBtn) startBtn.style.display = "none";
+                if (stopBtn) stopBtn.style.display = "inline-block";
+                if (timerDisplay) timerDisplay.style.display = "block";
+                
+                timerInterval = setInterval(function() {
+                    timerSeconds++;
+                    updateTimerDisplay();
+                }, 1000);
+            }
+        });
+
+        safeAddEventListener("stopTimer", "click", function() {
+            if (isTimerRunning) {
+                isTimerRunning = false;
+                clearInterval(timerInterval);
+                const startBtn = document.getElementById("startTimer");
+                const stopBtn = document.getElementById("stopTimer");
+                const timerDisplay = document.getElementById("timerDisplay");
+                
+                if (startBtn) startBtn.style.display = "inline-block";
+                if (stopBtn) stopBtn.style.display = "none";
+                
+                // Auto-populate time tracking form
+                const hours = Math.floor(timerSeconds / 3600);
+                const minutes = Math.floor((timerSeconds % 3600) / 60);
+                const seconds = timerSeconds % 60;
+                
+                const timeString = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+                const timerTimeElement = document.getElementById("timerTime");
+                if (timerTimeElement) timerTimeElement.textContent = timeString;
+            }
+        });
+
+        safeAddEventListener("timeTrackingForm", "submit", function(e) {
+            e.preventDefault();
+            timerSeconds = 0;
+            isTimerRunning = false;
+            const startBtn = document.getElementById("startTimer");
+            const stopBtn = document.getElementById("stopTimer");
+            const timerDisplay = document.getElementById("timerDisplay");
+            
+            if (startBtn) startBtn.style.display = "inline-block";
+            if (stopBtn) stopBtn.style.display = "none";
+            if (timerDisplay) timerDisplay.style.display = "none";
+            
+            alert("Time logged successfully!");
+            this.reset();
+        });
+
+        safeAddEventListener("profileForm", "submit", function(e) {
+            e.preventDefault();
+            alert("Profile updated successfully!");
+        });
+
+        safeAddEventListener("createTaskForm", "submit", function(e) {
+            e.preventDefault();
+            alert("Task created successfully!");
+            const modal = bootstrap.Modal.getInstance(document.getElementById("createTaskModal"));
+            if (modal) modal.hide();
+            this.reset();
+        });
+
+        safeAddEventListener("editTaskForm", "submit", function(e) {
+            e.preventDefault();
+            alert("Task updated successfully!");
+            const modal = bootstrap.Modal.getInstance(document.getElementById("editTaskModal"));
+            if (modal) modal.hide();
+        });
+
+        safeAddEventListener("requestReviewForm", "submit", function(e) {
+            e.preventDefault();
+            alert("Code review requested successfully!");
+            const modal = bootstrap.Modal.getInstance(document.getElementById("requestReviewModal"));
+            if (modal) modal.hide();
+            this.reset();
+        });
+
+        safeAddEventListener("createProjectForm", "submit", function(e) {
+            e.preventDefault();
+            alert("Project created successfully!");
+            const modal = bootstrap.Modal.getInstance(document.getElementById("createProjectModal"));
+            if (modal) modal.hide();
+            this.reset();
         });
 
         // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set current date for forms
-            const today = new Date().toISOString().split('T')[0];
-            document.querySelectorAll('input[type="date"]').forEach(input => {
+        document.addEventListener("DOMContentLoaded", function() {
+            const today = new Date().toISOString().split("T")[0];
+            document.querySelectorAll("input[type='date']").forEach(input => {
                 if (!input.value) {
                     input.value = today;
                 }
             });
 
-            // Show dashboard by default
-            showSection('dashboard');
+            showSection("dashboard");
+            initializeCharts();
         });
 
         // Responsive sidebar toggle
         function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('show');
+            const sidebar = document.querySelector(".sidebar");
+            if (sidebar) {
+                sidebar.classList.toggle("show");
+            }
         }
 
         // Add mobile menu toggle
-        document.querySelector('.navbar-toggler').addEventListener('click', function() {
-            toggleSidebar();
+        safeQuerySelector(".navbar-toggler", function(toggleBtn) {
+            toggleBtn.addEventListener("click", function() {
+                toggleSidebar();
+            });
         });
 
         // Close sidebar on mobile when clicking outside
-        document.addEventListener('click', function(e) {
-            const sidebar = document.querySelector('.sidebar');
-            const toggleBtn = document.querySelector('.navbar-toggler');
+        document.addEventListener("click", function(e) {
+            const sidebar = document.querySelector(".sidebar");
+            const toggleBtn = document.querySelector(".navbar-toggler");
             
-            if (window.innerWidth <= 768 && 
+            if (window.innerWidth <= 768 && sidebar && toggleBtn &&
                 !sidebar.contains(e.target) && 
                 !toggleBtn.contains(e.target)) {
-                sidebar.classList.remove('show');
+                sidebar.classList.remove("show");
             }
         });
-    </script>
+</script>
+    <script src="{{ asset('js/dashboard-utils.js') }}"></script>
 </body>
 </html>
                 

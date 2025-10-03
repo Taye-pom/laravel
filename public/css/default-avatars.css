@@ -1,0 +1,52 @@
+/* Default avatar styles */
+.default-avatar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border-radius: 50%;
+}
+
+.default-avatar-28 { width: 28px; height: 28px; font-size: 12px; }
+.default-avatar-30 { width: 30px; height: 30px; font-size: 13px; }
+.default-avatar-35 { width: 35px; height: 35px; font-size: 14px; }
+.default-avatar-40 { width: 40px; height: 40px; font-size: 16px; }
+.default-avatar-80 { width: 80px; height: 80px; font-size: 24px; }
+.default-avatar-120 { width: 120px; height: 120px; font-size: 36px; }
+
+/* Fallback for broken images */
+img[src*="placeholder"] {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+img[src*="placeholder"]:before {
+    content: "👤";
+    display: block;
+    text-align: center;
+    line-height: 1;
+    font-size: 0.8em;
+}
+
+/* Safe image loading */
+img {
+    transition: opacity 0.3s ease;
+}
+
+img:not([src]) {
+    opacity: 0;
+}
+
+/* Loading state for images */
+img.loading {
+    background: #f8f9fa;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
