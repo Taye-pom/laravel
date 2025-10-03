@@ -49,4 +49,27 @@ class Task extends Model
     {
         return $this->due_date && $this->due_date < Carbon::today() && $this->status !== 'done';
     }
+
+    public function getStatusBadgeAttribute()
+    {
+        return match($this->status) {
+            'todo' => 'secondary',
+            'in_progress' => 'primary',
+            'review' => 'warning',
+            'completed' => 'success',
+            'cancelled' => 'danger',
+            default => 'secondary'
+        };
+    }
+
+    public function getPriorityBadgeAttribute()
+    {
+        return match($this->priority) {
+            'low' => 'success',
+            'medium' => 'warning',
+            'high' => 'danger',
+            'urgent' => 'dark',
+            default => 'secondary'
+        };
+    }
 }

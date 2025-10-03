@@ -48,6 +48,9 @@ window.DashboardUtils = {
         if (activeLink) {
             activeLink.classList.add("active");
         }
+        
+        // Scroll to top of the page to show the content
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     
     // Initialize charts safely

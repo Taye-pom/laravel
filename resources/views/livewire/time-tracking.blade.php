@@ -18,6 +18,41 @@
         </div>
     </div>
 
+    <!-- Quick Timer Form -->
+    @if(!$activeEntry)
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-stopwatch me-2"></i>Timer Rapide</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Projet *</label>
+                        <select class="form-select" wire:model="project_id">
+                            <option value="">Sélectionner un projet</option>
+                            @foreach($projects as $project)
+                                <option value="{{ $project->id }}">{{ $project->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Tâche</label>
+                        <select class="form-select" wire:model="task_id">
+                            <option value="">Aucune tâche</option>
+                            @foreach($tasks as $task)
+                                <option value="{{ $task->id }}">{{ $task->title }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-control" wire:model="description" placeholder="Description optionnelle">
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Active Timer -->
     @if($activeEntry)
         <div class="alert alert-info mb-4">
@@ -98,6 +133,13 @@
         </div>
     @endif
 
+    @if (session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     <!-- Time Entries List -->
     <div class="card">
         <div class="card-header">
@@ -167,6 +209,150 @@
     <div class="d-flex justify-content-center mt-4">
         {{ $timeEntries->links() }}
     </div>
+
+    <!-- Create Modal -->
+    @if($showCreateModal)
+        <div class="modal fade show" style="display: block;" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Nouvelle entrée de temps</h5>
+                        <button type="button" class="btn-close" wire:click="closeModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form wire:submit.prevent="store">
+                            <div class="mb-3">
+                                <label class="form-label">Projet *</label>
+                                <select class="form-select" wire:model="project_id" required>
+                                    <option value="">Sélectionner un projet</option>
+                                    @foreach($projects as $project)
+                                        <option value="{{ $project->id }}">{{ $project->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('project_id') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Tâche</label>
+                                <select class="form-select" wire:model="task_id">
+                                    <option value="">Aucune tâche</option>
+                                    @foreach($tasks as $task)
+                                        <option value="{{ $task->id }}">{{ $task->title }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Date *</label>
+                                <input type="date" class="form-control" wire:model="date" required>
+                                @error('date') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Heure de début *</label>
+                                        <input type="time" class="form-control" wire:model="start_time" required>
+                                        @error('start_time') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Heure de fin</label>
+                                        <input type="time" class="form-control" wire:model="end_time">
+                                        @error('end_time') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" wire:model="description" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" wire:click="closeModal">Annuler</button>
+                                <button type="submit" class="btn btn-primary">Créer</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    @endif
+
+    <!-- Edit Modal -->
+    @if($showEditModal)
+        <div class="modal fade show" style="display: block;" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modifier l'entrée de temps</h5>
+                        <button type="button" class="btn-close" wire:click="closeModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form wire:submit.prevent="update">
+                            <div class="mb-3">
+                                <label class="form-label">Projet *</label>
+                                <select class="form-select" wire:model="project_id" required>
+                                    <option value="">Sélectionner un projet</option>
+                                    @foreach($projects as $project)
+                                        <option value="{{ $project->id }}">{{ $project->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('project_id') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Tâche</label>
+                                <select class="form-select" wire:model="task_id">
+                                    <option value="">Aucune tâche</option>
+                                    @foreach($tasks as $task)
+                                        <option value="{{ $task->id }}">{{ $task->title }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Date *</label>
+                                <input type="date" class="form-control" wire:model="date" required>
+                                @error('date') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Heure de début *</label>
+                                        <input type="time" class="form-control" wire:model="start_time" required>
+                                        @error('start_time') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Heure de fin</label>
+                                        <input type="time" class="form-control" wire:model="end_time">
+                                        @error('end_time') <span class="text-danger">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" wire:model="description" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" wire:click="closeModal">Annuler</button>
+                                <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    @endif
 </div>
 
 <style>

@@ -88,6 +88,12 @@ class TimeTracking extends Component
 
     public function startTimer()
     {
+        // Check if project is selected
+        if (!$this->project_id) {
+            session()->flash('error', 'Veuillez sélectionner un projet avant de démarrer le timer.');
+            return;
+        }
+
         $this->validate([
             'project_id' => 'required|exists:projects,id',
             'task_id' => 'nullable|exists:tasks,id',

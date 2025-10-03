@@ -2191,6 +2191,9 @@
                 link.classList.remove('active');
             });
             event.target.classList.add('active');
+            
+            // Scroll to top of the page to show the content
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function toggleSidebar() {
